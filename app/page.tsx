@@ -194,7 +194,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-pricing`)
+  fetch("https://quotation-backend-beta.vercel.app/api/get-pricing")
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
