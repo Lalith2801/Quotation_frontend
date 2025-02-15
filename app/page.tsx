@@ -562,7 +562,6 @@ export default function Home() {
       
 
      
-      <h3 className="text-xl font-bold text-gray-900">
       <h3 className="text-lg font-bold text-gray-900">
   Total Cost: ₹{totalCost.toFixed(2)}/-
 </h3>
@@ -571,8 +570,6 @@ export default function Home() {
       Final Cost: {finalCost}/-
     </h3>
 
-
-      </h3>
   </div>
   )
 }
