@@ -233,9 +233,29 @@ useEffect(() => {
     let rate = pastingType === "Bottom Lock" ? 0.45 : 0.25;
     setPastingCost(ups * quantity * rate);
   }, [ups, quantity, pastingType]);
+
+  const [totalCost, setTotalCost] = useState(0);
+
+  useEffect(() => {
+    setTotalCost(
+      boardCost +
+      price +
+      coatingPrice +
+      dieCost +
+      punchingCost +
+      cuttingCost +
+      pastingCost +
+      transportCost
+    );
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, cuttingCost, pastingCost, transportCost]);
+  
+  const finalCost = ((totalCost * 1.15) / (quantity * ups)).toFixed(2);
+
+  
   return (
     <div className="p-6 bg-white text-gray-800 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-gray-900">Offset Quotation Maker</h1>
+
 
    {/* Board Type Selection */}
    <label className="block text-gray-700">Board Type:</label>
@@ -485,9 +505,18 @@ useEffect(() => {
 
       {/* Total Cost */}
       
+
      
       <h3 className="text-xl font-bold text-gray-900">
-      Total Cost: {(price + coatingPrice + dieCost + punchingCost  + transportCost+ pastingCost + boardCost).toFixed(2)}/-
+      <h3 className="text-lg font-bold text-gray-900">
+  Total Cost: ₹{totalCost.toFixed(2)}/-
+</h3>
+{/* Display Final Cost */}
+<h3 className="text-xl font-bold text-gray-900">
+      Final Cost: {finalCost}/-
+    </h3>
+
+
       </h3>
     </div>
   );
