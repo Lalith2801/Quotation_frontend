@@ -77,6 +77,30 @@ export default function Home() {
     }
   };
   
+  // Printing Pricing Data
+const pricingData = {
+  M1: {
+    "4_color": { basePrice: 7000, extraPricePerThousand: 700 },
+    "4_color_varnish": { basePrice: 7000, extraPricePerThousand: 800 },
+    "4_color_texture_UV": { basePrice: 12750, extraPricePerThousand: 1250 },
+    "Metpet_4_color_texture_UV": { basePrice: 13300, extraPricePerThousand: 1250 },
+  },
+  M2: {
+    "4_color": { basePrice: 2400, extraPricePerThousand: 350 },
+  },
+  M3: {
+    "4_color": { basePrice: 3200, extraPricePerThousand: 450 },
+  },
+  M5: {
+    "single_color": { basePrice: 250, extraPricePerThousand: 200 },
+  },
+  M6: {
+    "4_color": { basePrice: 3200, extraPricePerThousand: 450 },
+    "4_color_varnish": { basePrice: 3200, extraPricePerThousand: 700 },
+    "4_color_texture_UV": { basePrice: 6750, extraPricePerThousand: 1000 },
+    "Metpet_4_color_texture_UV": { basePrice: 7100, extraPricePerThousand: 1000 },
+  },
+};
 
 // Board Cost Calculation
 const [selectedSize, setSelectedSize] = useState("23 X 36"); // Default to 23 X 36
