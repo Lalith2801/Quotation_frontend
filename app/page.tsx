@@ -1,256 +1,274 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 type MachinePricing = {
-  basePrice: number;
-  extraPricePerThousand: number;
-};
+  basePrice: number
+  extraPricePerThousand: number
+}
 
 type PricingData = {
   pricingData: {
     [machine: string]: {
-      [printType: string]: MachinePricing;
-    };
-  };
-};
-
+      [printType: string]: MachinePricing
+    }
+  }
+}
 
 export default function Home() {
-  const [machines, setMachines] = useState<PricingData>({ pricingData: {} });
-  const [selectedMachine, setSelectedMachine] = useState("M1");
-  const [selectedPrintType, setSelectedPrintType] = useState("");
-  const [quantity, setQuantity] = useState(1000);
-  const [wastage, setWastage] = useState(200);
-  const [price, setPrice] = useState(0);
+  const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
+  const [selectedMachine, setSelectedMachine] = useState("")
+  const [selectedPrintType, setSelectedPrintType] = useState("")
+  const [quantity, setQuantity] = useState(1000)
+  const [wastage, setWastage] = useState(200)
+  const [price, setPrice] = useState(0)
 
   // ✅ Board Pricing Data
   const boardPrices = {
     artPaper: {
       sizes: {
-        "20x30": { "80GSM": 2.72, "90GSM": 2.98, "100GSM": 3.30, "130GSM": 4.15, "170GSM": 5.43, "220GSM": 7.03, "250GSM": 7.99, "300GSM": 9.58, "350GSM": 11.35 },
-        "23x36": { "80GSM": 3.73, "90GSM": 4.10, "100GSM": 4.57, "130GSM": 5.73, "170GSM": 7.49, "220GSM": 9.70, "250GSM": 11.00, "300GSM": 13.22, "350GSM": 15.65 },
-        "25x36": { "80GSM": 4.06, "90GSM": 4.46, "100GSM": 4.96, "130GSM": 6.22, "170GSM": 8.14, "220GSM": 10.54, "250GSM": 11.98, "300GSM": 14.37, "350GSM": 17.02 }
-      }
+        "20x30": {
+          "80GSM": 2.72,
+          "90GSM": 2.98,
+          "100GSM": 3.3,
+          "130GSM": 4.15,
+          "170GSM": 5.43,
+          "220GSM": 7.03,
+          "250GSM": 7.99,
+          "300GSM": 9.58,
+          "350GSM": 11.35,
+        },
+        "23x36": {
+          "80GSM": 3.73,
+          "90GSM": 4.1,
+          "100GSM": 4.57,
+          "130GSM": 5.73,
+          "170GSM": 7.49,
+          "220GSM": 9.7,
+          "250GSM": 11.0,
+          "300GSM": 13.22,
+          "350GSM": 15.65,
+        },
+        "25x36": {
+          "80GSM": 4.06,
+          "90GSM": 4.46,
+          "100GSM": 4.96,
+          "130GSM": 6.22,
+          "170GSM": 8.14,
+          "220GSM": 10.54,
+          "250GSM": 11.98,
+          "300GSM": 14.37,
+          "350GSM": 17.02,
+        },
+      },
     },
     maplithio: {
       sizes: {
-        "20x30": { "60GSM": 1.90, "70GSM": 2.18, "80GSM": 2.48, "90GSM": 2.79, "100GSM": 3.10, "120GSM": 3.72 },
+        "20x30": { "60GSM": 1.9, "70GSM": 2.18, "80GSM": 2.48, "90GSM": 2.79, "100GSM": 3.1, "120GSM": 3.72 },
         "23x36": { "60GSM": 2.63, "70GSM": 2.97, "80GSM": 3.42, "90GSM": 3.85, "100GSM": 4.37, "120GSM": 5.11 },
         "25x36": { "60GSM": 3.25, "70GSM": 3.72, "80GSM": 4.18, "90GSM": 4.65, "100GSM": 5.57 },
-        "17x27": { "60GSM": 1.66, "70GSM": 1.90, "80GSM": 2.13, "90GSM": 2.37, "100GSM": 2.84 }
-      }
+        "17x27": { "60GSM": 1.66, "70GSM": 1.9, "80GSM": 2.13, "90GSM": 2.37, "100GSM": 2.84 },
+      },
     },
     cyberXL: {
       sizes: {
         "31.5x41.5": { "350GSM": 25.68, "300GSM": 22.01 },
         "25x41.5": { "350GSM": 20.38, "300GSM": 17.47 },
         "25x36": { "350GSM": 17.68, "300GSM": 15.15 },
-        "23x36": { "350GSM": 16.27, "300GSM": 13.94 }
-      }
+        "23x36": { "350GSM": 16.27, "300GSM": 13.94 },
+      },
     },
     whiteBack: {
       sizes: {
         "31.5x41.5": { "350GSM": 18.89, "300GSM": 16.19 },
-        "25x41.5": { "350GSM": 15.00, "300GSM": 12.85 },
-        "25x36": { "350GSM": 13.00, "300GSM": 11.15 },
-        "23x36": { "350GSM": 11.97, "300GSM": 10.26 }
-      }
+        "25x41.5": { "350GSM": 15.0, "300GSM": 12.85 },
+        "25x36": { "350GSM": 13.0, "300GSM": 11.15 },
+        "23x36": { "350GSM": 11.97, "300GSM": 10.26 },
+      },
     },
     grayBack: {
       sizes: {
         "31.5x41.5": { "230GSM": 11.05, "250GSM": 12.02, "300GSM": 13.66 },
         "25x41.5": { "230GSM": 8.78, "250GSM": 9.54, "300GSM": 10.84 },
-        "25x36": { "230GSM": 7.61, "250GSM": 8.28, "300GSM": 9.40 },
-        "23x36": { "230GSM": 7.02, "250GSM": 7.62, "300GSM": 8.65 }
-      }
+        "25x36": { "230GSM": 7.61, "250GSM": 8.28, "300GSM": 9.4 },
+        "23x36": { "230GSM": 7.02, "250GSM": 7.62, "300GSM": 8.65 },
+      },
     },
     stickerPaper: {
       sizes: {
-        "20x30": { "StayOn": 12.00, "StickOn": 11.50 },
-        "18x25": { "StayOn": 8.50, "StickOn": 9.50 },
-        "18x23": { "StayOn": 8.15, "StickOn": 9.00 },
-        "23x36": { "StayOn": 17.50, "StickOn": 11.00 }
-      }
-    }
-  };
-  
+        "20x30": { StayOn: 12.0, StickOn: 11.5 },
+        "18x25": { StayOn: 8.5, StickOn: 9.5 },
+        "18x23": { StayOn: 8.15, StickOn: 9.0 },
+        "23x36": { StayOn: 17.5, StickOn: 11.0 },
+      },
+    },
+  }
 
-// Board Cost Calculation
-const [selectedSize, setSelectedSize] = useState("23 X 36"); // Default to 23 X 36
-const [selectedGSM, setSelectedGSM] = useState("350");
-const [boardCost, setBoardCost] = useState(0);
-const [division, setDivision] = useState(1);
-const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("artPaper");
-
-
+  // Board Cost Calculation
+  const [selectedSize, setSelectedSize] = useState("23 X 36") // Default to 23 X 36
+  const [selectedGSM, setSelectedGSM] = useState("350")
+  const [boardCost, setBoardCost] = useState(0)
+  const [division, setDivision] = useState(1)
+  const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("artPaper")
 
   // Coating Calculation
-  const [coatingType, setCoatingType] = useState("Gloss");
-  const [coatingHeight, setCoatingHeight] = useState(0);
-  const [coatingWidth, setCoatingWidth] = useState(0);
-  const [coatingPrice, setCoatingPrice] = useState(0);
+  const [coatingType, setCoatingType] = useState("Gloss")
+  const [coatingHeight, setCoatingHeight] = useState(0)
+  const [coatingWidth, setCoatingWidth] = useState(0)
+  const [coatingPrice, setCoatingPrice] = useState(0)
 
   // Die Cost
-  const [dieCost, setDieCost] = useState(500);
+  const [dieCost, setDieCost] = useState(500)
 
- // Punching Cost
- const [punchingType, setPunchingType] = useState("Paper Board");
- const [punchingCostPerThousand, setPunchingCostPerThousand] = useState(500);
- const [punchingCost, setPunchingCost] = useState(0);
+  // Punching Cost
+  const [punchingType, setPunchingType] = useState("Paper Board")
+  const [punchingCostPerThousand, setPunchingCostPerThousand] = useState(500)
+  const [punchingCost, setPunchingCost] = useState(0)
 
- // Cutting Cost
- const [cuttingType, setCuttingType] = useState("Metpet");
- const [cuttingCost, setCuttingCost] = useState(0);
+  // Cutting Cost
+  const [cuttingType, setCuttingType] = useState("Metpet")
+  const [cuttingCost, setCuttingCost] = useState(0)
 
- // Transport Cost
- const [transportCost, setTransportCost] = useState(2000);
+  // Transport Cost
+  const [transportCost, setTransportCost] = useState(2000)
 
- // Pasting Cost
- const [pastingType, setPastingType] = useState("Bottom Lock");
- const [ups, setUps] = useState(1);
- const [pastingCost, setPastingCost] = useState(0);
- const API_URL = process.env.NEXT_PUBLIC_API_URL;
- useEffect(() => {
-  fetch(`https://quotation-backend-beta.vercel.app/api/get-pricing`)
-    .then((res) => res.json())
-    .then((data: PricingData) => {
-      setMachines(data);
-      if (data.pricingData[selectedMachine]) {
-        setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
-      }
-    });
-}, []);
-
-useEffect(() => {
-  if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
-    const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType];
-
-    let finalPrice;
-    if (quantity <= 3000) {
-      finalPrice = basePrice;
-    } else {
-      const extraUnits = Math.ceil((quantity - 3000) / 1000);
-      finalPrice = basePrice + extraUnits * extraPricePerThousand;
-    }
-
-    setPrice(finalPrice);
-  }
-}, [selectedMachine, selectedPrintType, quantity, machines]);
-
-useEffect(() => {
-  if (!boardPrices || !selectedBoard || !selectedSize || !selectedGSM) return;
-
-  // Ensure selectedBoard is a valid key
-  if (!(selectedBoard in boardPrices)) return;
-
-  const board = boardPrices[selectedBoard as keyof typeof boardPrices];
-
-  // Ensure selectedSize is a valid key
-  if (!(selectedSize in board.sizes)) return;
-
-  const sizeData = board.sizes[selectedSize as keyof typeof board.sizes];
-
-  // Ensure selectedGSM is a valid key
-  if (!(selectedGSM in sizeData)) return;
-
-  const boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0;
-
-  if (boardPricePerSheet) {
-    const costPerDivision = boardPricePerSheet / division;
-    const totalBoardCost = costPerDivision * (quantity + wastage);
-    setBoardCost(totalBoardCost);
-  }
-}, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage, boardPrices]);
-
-
-
-
-useEffect(() => {
-  setPunchingCost((quantity / 1000) * punchingCostPerThousand);
-}, [quantity, punchingCostPerThousand]);
-
-useEffect(() => {
-const rate = punchingType === "Paper Board" ? 500 : 1000;
-    setPunchingCost((quantity / 1000) * rate);
-  }, [quantity, punchingType]);
+  // Pasting Cost
+  const [pastingType, setPastingType] = useState("Bottom Lock")
+  const [ups, setUps] = useState(1)
+  const [pastingCost, setPastingCost] = useState(0)
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
+  useEffect(() => {
+    fetch(`https://quotation-backend-beta.vercel.app/api/get-pricing`)
+      .then((res) => res.json())
+      .then((data: PricingData) => {
+        setMachines(data)
+        if (Object.keys(data.pricingData).length > 0) {
+          const firstMachine = Object.keys(data.pricingData)[0]
+          setSelectedMachine(firstMachine)
+          if (data.pricingData[firstMachine]) {
+            setSelectedPrintType(Object.keys(data.pricingData[firstMachine])[0] || "")
+          }
+        }
+      })
+      .catch((error) => console.error("Error fetching pricing data:", error))
+  }, [])
 
   useEffect(() => {
-    let cost = 0;
-    if (cuttingType === "Metpet") {
-      cost = quantity <= 3000 ? 3000 : (3000 / quantity) * 3000;
-    } else if (cuttingType === "4 Color") {
-      cost = quantity <= 2000 ? 2000 : (2000 / quantity) * 2000;
+    if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
+      const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
+
+      let finalPrice
+      if (quantity <= 3000) {
+        finalPrice = basePrice
+      } else {
+        const extraUnits = Math.ceil((quantity - 3000) / 1000)
+        finalPrice = basePrice + extraUnits * extraPricePerThousand
+      }
+
+      setPrice(finalPrice)
     }
-    setCuttingCost(cost);
-  }, [quantity, cuttingType]);
+  }, [selectedMachine, selectedPrintType, quantity, machines])
 
-useEffect(() => {
-  setPunchingCostPerThousand(punchingType === "Paper Board" ? 500 : 1000);
-}, [punchingType]);
+  useEffect(() => {
+    if (!boardPrices || !selectedBoard || !selectedSize || !selectedGSM) return
 
+    // Ensure selectedBoard is a valid key
+    if (!(selectedBoard in boardPrices)) return
+
+    const board = boardPrices[selectedBoard as keyof typeof boardPrices]
+
+    // Ensure selectedSize is a valid key
+    if (!(selectedSize in board.sizes)) return
+
+    const sizeData = board.sizes[selectedSize as keyof typeof board.sizes]
+
+    // Ensure selectedGSM is a valid key
+    if (!(selectedGSM in sizeData)) return
+
+    const boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0
+
+    if (boardPricePerSheet) {
+      const costPerDivision = boardPricePerSheet / division
+      const totalBoardCost = costPerDivision * (quantity + wastage)
+      setBoardCost(totalBoardCost)
+    }
+  }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage])
+
+  useEffect(() => {
+    setPunchingCost((quantity / 1000) * punchingCostPerThousand)
+  }, [quantity, punchingCostPerThousand])
+
+  useEffect(() => {
+    const rate = punchingType === "Paper Board" ? 500 : 1000
+    setPunchingCost((quantity / 1000) * rate)
+  }, [quantity, punchingType])
+
+  useEffect(() => {
+    let cost = 0
+    if (cuttingType === "Metpet") {
+      cost = quantity <= 3000 ? 3000 : (3000 / quantity) * 3000
+    } else if (cuttingType === "4 Color") {
+      cost = quantity <= 2000 ? 2000 : (2000 / quantity) * 2000
+    }
+    setCuttingCost(cost)
+  }, [quantity, cuttingType])
+
+  useEffect(() => {
+    setPunchingCostPerThousand(punchingType === "Paper Board" ? 500 : 1000)
+  }, [punchingType])
 
   useEffect(() => {
     fetch("https://quotation-backend-beta.vercel.app/api/get-pricing")
       .then((res) => res.json())
       .then((data: PricingData) => {
-        setMachines(data);
+        setMachines(data)
         if (data.pricingData[selectedMachine]) {
-          setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
+          setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "")
         }
-      });
-  }, []);
+      })
+  }, [selectedMachine]) // Added selectedMachine as a dependency
 
   useEffect(() => {
     if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
-      const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType];
+      const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
 
-      let finalPrice;
+      let finalPrice
       if (quantity <= 3000) {
-        finalPrice = basePrice;
+        finalPrice = basePrice
       } else {
-        const extraUnits = Math.ceil((quantity - 3000) / 1000);
-        finalPrice = basePrice + extraUnits * extraPricePerThousand;
+        const extraUnits = Math.ceil((quantity - 3000) / 1000)
+        finalPrice = basePrice + extraUnits * extraPricePerThousand
       }
 
-      setPrice(finalPrice);
+      setPrice(finalPrice)
     }
-  }, [selectedMachine, selectedPrintType, quantity, machines]);
+  }, [selectedMachine, selectedPrintType, quantity, machines])
 
   const calculateCoatingCost = () => {
-    let rate = 0;
-    if (coatingType === "Gloss") rate = 0.38;
-    else if (coatingType === "Matt") rate = 0.45;
-    else if (coatingType === "Texture UV") rate = 0.80;
-    else if (coatingType === "Metpet") rate = 1.45;
+    let rate = 0
+    if (coatingType === "Gloss") rate = 0.38
+    else if (coatingType === "Matt") rate = 0.45
+    else if (coatingType === "Texture UV") rate = 0.8
+    else if (coatingType === "Metpet") rate = 1.45
 
-    const totalQuantity = quantity + wastage;
-    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity;
+    const totalQuantity = quantity + wastage
+    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity
 
-    setCoatingPrice(cost);
-  };
+    setCoatingPrice(cost)
+  }
   useEffect(() => {
-    let rate = pastingType === "Bottom Lock" ? 0.45 : 0.25;
-    setPastingCost(ups * quantity * rate);
-  }, [ups, quantity, pastingType]);
+    const rate = pastingType === "Bottom Lock" ? 0.45 : 0.25
+    setPastingCost(ups * quantity * rate)
+  }, [ups, quantity, pastingType])
 
-  const [totalCost, setTotalCost] = useState(0);
+  const [totalCost, setTotalCost] = useState(0)
 
   useEffect(() => {
-    setTotalCost(
-      boardCost +
-      price +
-      coatingPrice +
-      dieCost +
-      punchingCost +
-      pastingCost +
-      transportCost
-    );
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost]);
-  
-  const finalCost = ((totalCost) / (quantity * ups) * 1.16).toFixed(2);
+    setTotalCost(boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost)
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost])
 
-  
+  const finalCost = ((totalCost / (quantity * ups)) * 1.16).toFixed(2)
+
   return (
     <div className="p-6 bg-white text-gray-800 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-gray-900">Offset Quotation Maker</h1>
@@ -310,7 +328,7 @@ useEffect(() => {
       <input
         type="number"
         value={division}
-        onChange={(e) => setDivision(parseInt(e.target.value) || 1)}
+        onChange={(e) => setDivision(Number.parseInt(e.target.value) || 1)}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
 
@@ -319,7 +337,7 @@ useEffect(() => {
             <input
               type="number"
               value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
+              onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
               className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
             />
 
@@ -331,33 +349,39 @@ useEffect(() => {
 
       {/* Machine Selection */}
       <h2 className="text-xl font-bold text-gray-900">Printing Cost Calculation</h2>
-      <label className="block text-gray-700">Machine:</label>
-      <select
-        onChange={(e) => setSelectedMachine(e.target.value)}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      >
+      <fieldset>
+        <legend className="block text-gray-700">Machine:</legend>
         {Object.keys(machines.pricingData).map((machine) => (
-          <option key={machine} value={machine}>
-            {machine}
-          </option>
+          <label key={machine} className="inline-flex items-center mr-4">
+            <input
+              type="radio"
+              value={machine}
+              checked={selectedMachine === machine}
+              onChange={(e) => setSelectedMachine(e.target.value)}
+              className="form-radio h-4 w-4 text-blue-600"
+            />
+            <span className="ml-2">{machine}</span>
+          </label>
         ))}
-      </select>
+      </fieldset>
 
       {/* Printing Type Selection */}
       {machines.pricingData[selectedMachine] && (
-        <div>
-          <label className="block text-gray-700">Printing Type:</label>
-          <select
-            onChange={(e) => setSelectedPrintType(e.target.value)}
-            className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-          >
-            {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
-              <option key={type} value={type}>
-                {type.replace("_", " ")}
-              </option>
-            ))}
-          </select>
-        </div>
+        <fieldset className="mt-4">
+          <legend className="block text-gray-700">Printing Type:</legend>
+          {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
+            <label key={type} className="inline-flex items-center mr-4">
+              <input
+                type="radio"
+                value={type}
+                checked={selectedPrintType === type}
+                onChange={(e) => setSelectedPrintType(e.target.value)}
+                className="form-radio h-4 w-4 text-blue-600"
+              />
+              <span className="ml-2">{type.replace("_", " ")}</span>
+            </label>
+          ))}
+        </fieldset>
       )}
 
       {/* Quantity Input */}
@@ -365,7 +389,7 @@ useEffect(() => {
       <input
         type="number"
         value={quantity}
-        onChange={(e) => setQuantity(parseInt(e.target.value))}
+        onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
 
@@ -374,7 +398,7 @@ useEffect(() => {
       <input
         type="number"
         value={wastage}
-        onChange={(e) => setWastage(parseInt(e.target.value))}
+        onChange={(e) => setWastage(Number.parseInt(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
 
@@ -384,25 +408,30 @@ useEffect(() => {
 
       {/* Coating Section */}
       <h2 className="text-xl font-bold text-gray-900">Coating & Lamination</h2>
-      <label className="block text-gray-700">Type:</label>
-      <select
-        onChange={(e) => setCoatingType(e.target.value)}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      >
-        <option value="Gloss">Gloss (Lamination)</option>
-        <option value="Matt">Matt (Lamination)</option>
-        <option value="Texture UV">Texture UV</option>
-        <option value="Metpet">Metpet</option>
-      </select>
+      <fieldset>
+        <legend className="block text-gray-700">Type:</legend>
+        {["Gloss", "Matt", "Texture UV", "Metpet"].map((type) => (
+          <label key={type} className="inline-flex items-center mr-4">
+            <input
+              type="radio"
+              value={type}
+              checked={coatingType === type}
+              onChange={(e) => setCoatingType(e.target.value)}
+              className="form-radio h-4 w-4 text-blue-600"
+            />
+            <span className="ml-2">{type}</span>
+          </label>
+        ))}
+      </fieldset>
 
-      <label className="block text-gray-700">Height (cm):</label>
+      <label className="block text-gray-700">Height (in):</label>
       <input
         type="number"
         onChange={(e) => setCoatingHeight(Number(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
 
-      <label className="block text-gray-700">Width (cm):</label>
+      <label className="block text-gray-700">Width (in):</label>
       <input
         type="number"
         onChange={(e) => setCoatingWidth(Number(e.target.value))}
@@ -428,7 +457,7 @@ useEffect(() => {
       <input
         type="number"
         value={dieCost}
-        onChange={(e) => setDieCost(parseInt(e.target.value))}
+        onChange={(e) => setDieCost(Number.parseInt(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
       
@@ -436,15 +465,29 @@ useEffect(() => {
 
        {/* Punching Section */}
        <h2 className="text-xl font-bold text-gray-900">Punching</h2>
-      <label className="block text-gray-700">Select Punching Type:</label>
-      <select
-        value={punchingType}
-        onChange={(e) => setPunchingType(e.target.value)}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      >
-        <option value="Paper Board">Paper Board (₹500 per 1000)</option>
-        <option value="E-Flute">E-Flute (₹1000 per 1000)</option>
-      </select>
+       <fieldset>
+        <legend className="block text-gray-700">Select Punching Type:</legend>
+        <label className="inline-flex items-center mr-4">
+          <input
+            type="radio"
+            value="Paper Board"
+            checked={punchingType === "Paper Board"}
+            onChange={(e) => setPunchingType(e.target.value)}
+            className="form-radio h-4 w-4 text-blue-600"
+          />
+          <span className="ml-2">Paper Board (₹500 per 1000)</span>
+        </label>
+        <label className="inline-flex items-center">
+          <input
+            type="radio"
+            value="E-Flute"
+            checked={punchingType === "E-Flute"}
+            onChange={(e) => setPunchingType(e.target.value)}
+            className="form-radio h-4 w-4 text-blue-600"
+          />
+          <span className="ml-2">E-Flute (₹1000 per 1000)</span>
+        </label>
+      </fieldset>
       <h3 className="text-lg font-bold text-gray-900">Punching Cost: {punchingCost.toFixed(2)}/-</h3>
       
       <hr className="my-6" />
@@ -467,22 +510,35 @@ useEffect(() => {
       
 {/* Pasting Section */}
 <h2 className="text-xl font-bold text-gray-900">Pasting</h2>
-
-<label className="block text-gray-700">Pasting Type:</label>
-<select
-  value={pastingType}
-  onChange={(e) => setPastingType(e.target.value)}
-  className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
->
-  <option value="Bottom Lock">Bottom Lock</option>
-  <option value="Side Pasting">Side Pasting</option>
-</select>
+<fieldset>
+  <legend className="block text-gray-700">Pasting Type:</legend>
+  <label className="inline-flex items-center mr-4">
+    <input
+      type="radio"
+      value="Bottom Lock"
+      checked={pastingType === "Bottom Lock"}
+      onChange={(e) => setPastingType(e.target.value)}
+      className="form-radio h-4 w-4 text-blue-600"
+    />
+    <span className="ml-2">Bottom Lock</span>
+  </label>
+  <label className="inline-flex items-center">
+    <input
+      type="radio"
+      value="Side Pasting"
+      checked={pastingType === "Side Pasting"}
+      onChange={(e) => setPastingType(e.target.value)}
+      className="form-radio h-4 w-4 text-blue-600"
+    />
+    <span className="ml-2">Side Pasting</span>
+  </label>
+</fieldset>
 
 <label className="block text-gray-700">Number of Ups:</label>
 <input
   type="number"
   value={ups}
-  onChange={(e) => setUps(parseInt(e.target.value))}
+  onChange={(e) => setUps(Number.parseInt(e.target.value))}
   className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
 />
 
@@ -495,7 +551,7 @@ useEffect(() => {
       <input
         type="number"
         value={transportCost}
-        onChange={(e) => setTransportCost(parseInt(e.target.value))}
+        onChange={(e) => setTransportCost(Number.parseInt(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
       <h3 className="text-lg font-bold text-gray-900">Transport Cost: {transportCost}/-</h3>
@@ -517,7 +573,7 @@ useEffect(() => {
 
 
       </h3>
-    </div>
-  );
+  </div>
+  )
 }
 
