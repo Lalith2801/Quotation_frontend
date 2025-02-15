@@ -248,7 +248,7 @@ useEffect(() => {
     );
   }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost]);
   
-  const finalCost = ((totalCost * 1.15) / (quantity * ups)).toFixed(2);
+  const finalCost = ((totalCost) / (quantity * ups) * 1.16).toFixed(2);
 
   
   return (
@@ -450,7 +450,7 @@ useEffect(() => {
       <hr className="my-6" />
 
       {/* Cutting Section */}
-      <h2 className="text-xl font-bold text-gray-900">Cutting</h2>
+      {/* <h2 className="text-xl font-bold text-gray-900">Cutting</h2>
       <label className="block text-gray-700">Cutting Type:</label>
       <select
         value={cuttingType}
@@ -462,7 +462,7 @@ useEffect(() => {
       </select>
       <h3 className="text-lg font-bold text-gray-900">Cutting Cost: {cuttingCost.toFixed(2)}/-</h3>
       
-      <hr className="my-6" />
+      <hr className="my-6" /> */}
 
       
 {/* Pasting Section */}
