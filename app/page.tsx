@@ -16,15 +16,12 @@ type PricingData = {
 };
 
 export default function Home() {
-  
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} });
   const [selectedMachine, setSelectedMachine] = useState("M1");
   const [selectedPrintType, setSelectedPrintType] = useState("");
   const [quantity, setQuantity] = useState(1000);
   const [wastage, setWastage] = useState(200);
   const [price, setPrice] = useState(0);
-
 
   // ✅ Board Pricing Data
   const boardPrices = {
@@ -77,30 +74,6 @@ export default function Home() {
     }
   };
   
-  // Printing Pricing Data
-const pricingData = {
-  M1: {
-    "4_color": { basePrice: 7000, extraPricePerThousand: 700 },
-    "4_color_varnish": { basePrice: 7000, extraPricePerThousand: 800 },
-    "4_color_texture_UV": { basePrice: 12750, extraPricePerThousand: 1250 },
-    "Metpet_4_color_texture_UV": { basePrice: 13300, extraPricePerThousand: 1250 },
-  },
-  M2: {
-    "4_color": { basePrice: 2400, extraPricePerThousand: 350 },
-  },
-  M3: {
-    "4_color": { basePrice: 3200, extraPricePerThousand: 450 },
-  },
-  M5: {
-    "single_color": { basePrice: 250, extraPricePerThousand: 200 },
-  },
-  M6: {
-    "4_color": { basePrice: 3200, extraPricePerThousand: 450 },
-    "4_color_varnish": { basePrice: 3200, extraPricePerThousand: 700 },
-    "4_color_texture_UV": { basePrice: 6750, extraPricePerThousand: 1000 },
-    "Metpet_4_color_texture_UV": { basePrice: 7100, extraPricePerThousand: 1000 },
-  },
-};
 
 // Board Cost Calculation
 const [selectedSize, setSelectedSize] = useState("23 X 36"); // Default to 23 X 36
@@ -138,7 +111,7 @@ const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("ar
  const [pastingCost, setPastingCost] = useState(0);
 
  useEffect(() => {
-  fetch(`https://quotation-backend-beta.vercel.app`)
+  fetch("http://localhost:5000/api/get-pricing")
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
@@ -165,29 +138,17 @@ useEffect(() => {
 }, [selectedMachine, selectedPrintType, quantity, machines]);
 
 useEffect(() => {
-  if (!boardPrices || !selectedBoard || !selectedSize || !selectedGSM) return;
+  if (selectedBoard && selectedSize && selectedGSM) {
+    const gsmKey = selectedGSM as keyof (typeof boardPrices)[keyof typeof boardPrices]["sizes"][keyof typeof boardPrices["artPaper"]["sizes"]];
+    const boardPricePerSheet = boardPrices[selectedBoard].sizes[selectedSize]?.[gsmKey];
 
-  // Ensure selectedBoard is a valid key
-  if (!(selectedBoard in boardPrices)) return;
-
-  const board = boardPrices[selectedBoard as keyof typeof boardPrices];
-
-  // Ensure selectedSize is a valid key
-  if (!(selectedSize in board.sizes)) return;
-
-  const sizeData = board.sizes[selectedSize as keyof typeof board.sizes];
-
-  // Ensure selectedGSM is a valid key
-  if (!(selectedGSM in sizeData)) return;
-
-  const boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0;
-
-  if (boardPricePerSheet) {
-    const costPerDivision = boardPricePerSheet / division;
-    const totalBoardCost = costPerDivision * (quantity + wastage);
-    setBoardCost(totalBoardCost);
+    if (boardPricePerSheet) {
+      const costPerDivision = boardPricePerSheet / division;
+      const totalBoardCost = costPerDivision * (quantity + wastage);
+      setBoardCost(totalBoardCost);
+    }
   }
-}, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage, boardPrices]);
+}, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage]);
 
 
 
@@ -217,18 +178,16 @@ useEffect(() => {
 }, [punchingType]);
 
 
-useEffect(() => {
-  fetch("https://quotation-backend-beta.vercel.app")
-    .then((res) => res.json())
-    .then((data: PricingData) => {
-      setMachines(data);
-      if (data.pricingData[selectedMachine]) {
-        setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
-      }
-    })
-    .catch((error) => console.error("Error fetching pricing data:", error));
-}, []);
-
+  useEffect(() => {
+    fetch("http://localhost:5000/api/get-pricing")
+      .then((res) => res.json())
+      .then((data: PricingData) => {
+        setMachines(data);
+        if (data.pricingData[selectedMachine]) {
+          setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
+        }
+      });
+  }, []);
 
   useEffect(() => {
     if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
