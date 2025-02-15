@@ -193,16 +193,18 @@ useEffect(() => {
 }, [punchingType]);
 
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/get-pricing")
-      .then((res) => res.json())
-      .then((data: PricingData) => {
-        setMachines(data);
-        if (data.pricingData[selectedMachine]) {
-          setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
-        }
-      });
-  }, []);
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-pricing`)
+    .then((res) => res.json())
+    .then((data: PricingData) => {
+      setMachines(data);
+      if (data.pricingData[selectedMachine]) {
+        setSelectedPrintType(Object.keys(data.pricingData[selectedMachine])[0] || "");
+      }
+    })
+    .catch((error) => console.error("Error fetching pricing data:", error));
+}, []);
+
 
   useEffect(() => {
     if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
