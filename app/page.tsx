@@ -111,7 +111,7 @@ const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("ar
  const [pastingCost, setPastingCost] = useState(0);
 
  useEffect(() => {
-  fetch("http://localhost:5000/api/get-pricing")
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-pricing`)
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
