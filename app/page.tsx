@@ -243,11 +243,10 @@ useEffect(() => {
       coatingPrice +
       dieCost +
       punchingCost +
-      cuttingCost +
       pastingCost +
       transportCost
     );
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, cuttingCost, pastingCost, transportCost]);
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost]);
   
   const finalCost = ((totalCost * 1.15) / (quantity * ups)).toFixed(2);
 
