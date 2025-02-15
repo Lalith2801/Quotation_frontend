@@ -138,7 +138,7 @@ const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("ar
  const [pastingCost, setPastingCost] = useState(0);
 
  useEffect(() => {
-  fetch(`https://quotation-backend-beta.vercel.app/api/get-pricing`)
+  fetch(`https://quotation-backend-beta.vercel.app`)
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
