@@ -112,7 +112,7 @@ const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("ar
  const [pastingCost, setPastingCost] = useState(0);
  const API_URL = process.env.NEXT_PUBLIC_API_URL;
  useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-pricing`)
+  fetch(`https://quotation-backend-beta.vercel.app/api/get-pricing`)
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
@@ -191,7 +191,7 @@ useEffect(() => {
 
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/get-pricing")
+    fetch("https://quotation-backend-beta.vercel.app/api/get-pricing")
       .then((res) => res.json())
       .then((data: PricingData) => {
         setMachines(data);
