@@ -16,12 +16,15 @@ type PricingData = {
 };
 
 export default function Home() {
+  
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} });
   const [selectedMachine, setSelectedMachine] = useState("M1");
   const [selectedPrintType, setSelectedPrintType] = useState("");
   const [quantity, setQuantity] = useState(1000);
   const [wastage, setWastage] = useState(200);
   const [price, setPrice] = useState(0);
+
 
   // ✅ Board Pricing Data
   const boardPrices = {
