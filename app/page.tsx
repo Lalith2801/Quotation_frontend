@@ -218,7 +218,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  fetch("https://quotation-backend-beta.vercel.app/api/get-pricing")
+  fetch("https://quotation-backend-beta.vercel.app")
     .then((res) => res.json())
     .then((data: PricingData) => {
       setMachines(data);
