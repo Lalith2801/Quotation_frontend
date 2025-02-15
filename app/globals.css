@@ -31,3 +31,15 @@ body {
     text-wrap: balance;
   }
 }
+:root {
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #4a90e2;
+  --border-color: #dddddd;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Arial', sans-serif;
+}
