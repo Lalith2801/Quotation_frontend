@@ -15,6 +15,7 @@ type PricingData = {
   };
 };
 
+
 export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} });
   const [selectedMachine, setSelectedMachine] = useState("M1");
@@ -109,7 +110,7 @@ const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("ar
  const [pastingType, setPastingType] = useState("Bottom Lock");
  const [ups, setUps] = useState(1);
  const [pastingCost, setPastingCost] = useState(0);
-
+ const API_URL = process.env.NEXT_PUBLIC_API_URL;
  useEffect(() => {
   fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-pricing`)
     .then((res) => res.json())
