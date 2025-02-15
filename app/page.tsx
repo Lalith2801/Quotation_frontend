@@ -138,17 +138,29 @@ useEffect(() => {
 }, [selectedMachine, selectedPrintType, quantity, machines]);
 
 useEffect(() => {
-  if (selectedBoard && selectedSize && selectedGSM) {
-    const gsmKey = selectedGSM as keyof (typeof boardPrices)[keyof typeof boardPrices]["sizes"][keyof typeof boardPrices["artPaper"]["sizes"]];
-    const boardPricePerSheet = boardPrices[selectedBoard].sizes[selectedSize]?.[gsmKey];
+  if (!boardPrices || !selectedBoard || !selectedSize || !selectedGSM) return;
 
-    if (boardPricePerSheet) {
-      const costPerDivision = boardPricePerSheet / division;
-      const totalBoardCost = costPerDivision * (quantity + wastage);
-      setBoardCost(totalBoardCost);
-    }
+  // Ensure selectedBoard is a valid key
+  if (!(selectedBoard in boardPrices)) return;
+
+  const board = boardPrices[selectedBoard as keyof typeof boardPrices];
+
+  // Ensure selectedSize is a valid key
+  if (!(selectedSize in board.sizes)) return;
+
+  const sizeData = board.sizes[selectedSize as keyof typeof board.sizes];
+
+  // Ensure selectedGSM is a valid key
+  if (!(selectedGSM in sizeData)) return;
+
+  const boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0;
+
+  if (boardPricePerSheet) {
+    const costPerDivision = boardPricePerSheet / division;
+    const totalBoardCost = costPerDivision * (quantity + wastage);
+    setBoardCost(totalBoardCost);
   }
-}, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage]);
+}, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage, boardPrices]);
 
 
 
