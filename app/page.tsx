@@ -195,12 +195,12 @@ export default function Home() {
   }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage])
 
   useEffect(() => {
-    setPunchingCost((quantity / 1000) * punchingCostPerThousand)
+    setPunchingCost(((quantity + wastage) / 1000) * punchingCostPerThousand)
   }, [quantity, punchingCostPerThousand])
 
   useEffect(() => {
     const rate = punchingType === "Paper Board" ? 500 : 1000
-    setPunchingCost((quantity / 1000) * rate)
+    setPunchingCost(((quantity + wastage) / 1000) * rate)
   }, [quantity, punchingType])
 
   useEffect(() => {
@@ -256,6 +256,7 @@ export default function Home() {
 
     setCoatingPrice(cost)
   }
+  
   useEffect(() => {
     const rate = pastingType === "Bottom Lock" ? 0.45 : 0.25
     setPastingCost(ups * quantity * rate)
@@ -269,29 +270,37 @@ export default function Home() {
 
   const finalCost = ((totalCost / (quantity * ups)) * 1.16).toFixed(2)
 
+
+
+  
   return (
+
+
+
     <div className="p-6 bg-white text-gray-800 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-gray-900">Offset Quotation Maker</h1>
+  <h1 className="text-6xl font-bold text-center py-12 text-gray-900">Offset Quotation Maker</h1>
 
+      <div className="flex flex-row gap-6 p-6 items-stretch">
+  {/* Board Selection - 40% Width */}
+  <div className="w-full md:w-2/5 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-lg font-semibold text-gray-900 mb-4">Board Selection</h2>
 
-   {/* Board Type Selection */}
-   <label className="block text-gray-700">Board Type:</label>
+    <label className="block text-gray-700">Board Type:</label>
     <select
       value={selectedBoard}
       onChange={(e) => setSelectedBoard(e.target.value as keyof typeof boardPrices)}
-      className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
     >
       {Object.keys(boardPrices).map((board) => (
         <option key={board} value={board}>{board}</option>
       ))}
     </select>
 
-    {/* Board Size Selection */}
-    <label className="block text-gray-700">Board Size:</label>
+    <label className="block text-gray-700 mt-4">Board Size:</label>
     <select
       value={selectedSize}
       onChange={(e) => setSelectedSize(e.target.value)}
-      className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
       disabled={!selectedBoard}
     >
       <option value="">Select Size</option>
@@ -301,18 +310,16 @@ export default function Home() {
         ))}
     </select>
 
-    {/* GSM Selection */}
-{/* GSM Selection */}
-{selectedSize && selectedBoard && (
-  <>
-    <label className="block text-gray-700">GSM:</label>
-    <select
-      value={selectedGSM}
-      onChange={(e) => setSelectedGSM(e.target.value)}
-      className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      disabled={!selectedSize}
-    >
-      <option value="">Select GSM</option>
+    {selectedSize && selectedBoard && (
+      <>
+        <label className="block text-gray-700 mt-4">GSM:</label>
+        <select
+          value={selectedGSM}
+          onChange={(e) => setSelectedGSM(e.target.value)}
+          className="border border-gray-300 p-2 w-full rounded-md bg-white"
+          disabled={!selectedSize}
+        >
+          <option value="">Select GSM</option>
       {Object.keys(
         boardPrices[selectedBoard as keyof typeof boardPrices]?.sizes?.[
           selectedSize as keyof typeof boardPrices[typeof selectedBoard]["sizes"]
@@ -322,77 +329,91 @@ export default function Home() {
       ))}
     </select>
   </>
-)}
+    )}
 
-      <label className="block text-gray-700">Division:</label>
-      <input
-        type="number"
-        value={division}
-        onChange={(e) => setDivision(Number.parseInt(e.target.value) || 1)}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      />
+<div className="flex items-center space-x-2 mt-4">
+  <button 
+    onClick={() => setDivision((prev) => Math.max(1, prev - 1))} 
+    className="px-3 py-2 bg-gray-300 text-gray-700 rounded-md"
+  >
+    −
+  </button>
+  <input
+    type="number"
+    value={division}
+    onChange={(e) => setDivision(Number.parseInt(e.target.value) || 1)}
+    className="border border-gray-300 p-2 w-20 text-center rounded-md bg-white"
+  />
+  <button 
+    onClick={() => setDivision((prev) => prev + 1)} 
+    className="px-3 py-2 bg-gray-300 text-gray-700 rounded-md"
+  >
+    +
+  </button>
+</div>
 
 
-            <label className="block text-gray-700">Quantity:</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
-              className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-            />
+    <label className="block text-gray-700 mt-4">Quantity:</label>
+    <input
+      type="number"
+      value={quantity}
+      onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
+    />
 
-<h3 className="text-lg font-bold text-gray-900">
-  Board Cost: ₹{boardCost ? boardCost.toFixed(2) : "0.00"}/-
-</h3>
-      <hr className="my-6" />
-            
+    <h3 className="text-lg font-semibold text-gray-900 mt-4">
+      Board Cost: ₹{boardCost ? boardCost.toFixed(2) : "0.00"}/-
+    </h3>
+  </div>
 
-      {/* Machine Selection */}
-      <h2 className="text-xl font-bold text-gray-900">Printing Cost Calculation</h2>
-      <fieldset>
-        <legend className="block text-gray-700">Machine:</legend>
-        {Object.keys(machines.pricingData).map((machine) => (
-          <label key={machine} className="inline-flex items-center mr-4">
+  {/* Printing Cost Calculation - 60% Width */}
+  <div className="w-full md:w-3/5 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-lg font-semibold text-gray-900 mb-4">Printing Cost Calculation</h2>
+
+    <fieldset>
+      <legend className="block text-gray-700">Machine:</legend>
+      {Object.keys(machines.pricingData).map((machine) => (
+        <label key={machine} className="inline-flex items-center mr-4">
+          <input
+            type="radio"
+            value={machine}
+            checked={selectedMachine === machine}
+            onChange={(e) => setSelectedMachine(e.target.value)}
+            className="form-radio h-4 w-4 text-blue-600"
+          />
+          <span className="ml-2">{machine}</span>
+        </label>
+      ))}
+    </fieldset>
+
+    {machines.pricingData[selectedMachine] && (
+      <fieldset className="mt-4">
+        <legend className="block text-gray-700">Printing Type:</legend>
+        {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
+          <label key={type} className="inline-flex items-center mr-4">
             <input
               type="radio"
-              value={machine}
-              checked={selectedMachine === machine}
-              onChange={(e) => setSelectedMachine(e.target.value)}
+              value={type}
+              checked={selectedPrintType === type}
+              onChange={(e) => setSelectedPrintType(e.target.value)}
               className="form-radio h-4 w-4 text-blue-600"
             />
-            <span className="ml-2">{machine}</span>
+            <span className="ml-2">{type.replace("_", " ")}</span>
           </label>
         ))}
       </fieldset>
+    )}
 
-      {/* Printing Type Selection */}
-      {machines.pricingData[selectedMachine] && (
-        <fieldset className="mt-4">
-          <legend className="block text-gray-700">Printing Type:</legend>
-          {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
-            <label key={type} className="inline-flex items-center mr-4">
-              <input
-                type="radio"
-                value={type}
-                checked={selectedPrintType === type}
-                onChange={(e) => setSelectedPrintType(e.target.value)}
-                className="form-radio h-4 w-4 text-blue-600"
-              />
-              <span className="ml-2">{type.replace("_", " ")}</span>
-            </label>
-          ))}
-        </fieldset>
-      )}
-
-      {/* Quantity Input */}
-      <label className="block text-gray-700">Quantity:</label>
+<fieldset className="mt-4">
+    {/* Quantity Input */}
+    <label className="block text-gray-700">Quantity:</label>
       <input
         type="number"
         value={quantity}
         onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
-
+ </fieldset>
       {/* Wastage Input */}
       <label className="block text-gray-700">Wastage (Default: 200):</label>
       <input
@@ -402,94 +423,111 @@ export default function Home() {
         className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
       />
 
-      <h2 className="text-xl font-bold text-gray-900">Estimated Print Price: {price}/-</h2>
+    <h2 className="text-xl font-bold text-gray-900 mt-4">Estimated Print Price: ₹{price}/-</h2>
+  </div>
+</div>
+
 
       <hr className="my-6" />
 
-      {/* Coating Section */}
-      <h2 className="text-xl font-bold text-gray-900">Coating & Lamination</h2>
-      <fieldset>
-        <legend className="block text-gray-700">Type:</legend>
-        {["Gloss", "Matt", "Texture UV", "Metpet"].map((type) => (
-          <label key={type} className="inline-flex items-center mr-4">
-            <input
-              type="radio"
-              value={type}
-              checked={coatingType === type}
-              onChange={(e) => setCoatingType(e.target.value)}
-              className="form-radio h-4 w-4 text-blue-600"
-            />
-            <span className="ml-2">{type}</span>
-          </label>
-        ))}
-      </fieldset>
+      <div className="flex flex-wrap lg:flex-nowrap gap-6">
+  {/* Coating & Lamination Section - 40% */}
+  <div className="w-full lg:w-2/5 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-lg font-semibold text-gray-900 mb-4">Coating & Lamination</h2>
 
-      <label className="block text-gray-700">Height (in):</label>
-      <input
-        type="number"
-        onChange={(e) => setCoatingHeight(Number(e.target.value))}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      />
-
-      <label className="block text-gray-700">Width (in):</label>
-      <input
-        type="number"
-        onChange={(e) => setCoatingWidth(Number(e.target.value))}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      />
-
-      <button
-        onClick={calculateCoatingCost}
-        className="bg-blue-500 text-white p-2 rounded"
-      >
-        Calculate Coating Cost
-      </button>
-
-      <h3 className="text-lg font-bold text-gray-900">
-        Coating Cost: {coatingPrice.toFixed(2)}/-
-      </h3>
-
-      <hr className="my-6" />
-
-      {/* Die Cost Section */}
-      <h2 className="text-xl font-bold text-gray-900">Die Cost</h2>
-      <label className="block text-gray-700">Die Cost (Default: 500):</label>
-      <input
-        type="number"
-        value={dieCost}
-        onChange={(e) => setDieCost(Number.parseInt(e.target.value))}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      />
-      
-      <hr className="my-6" />
-
-       {/* Punching Section */}
-       <h2 className="text-xl font-bold text-gray-900">Punching</h2>
-       <fieldset>
-        <legend className="block text-gray-700">Select Punching Type:</legend>
-        <label className="inline-flex items-center mr-4">
+    <fieldset>
+      <legend className="block text-gray-700">Type:</legend>
+      {["Gloss", "Matt", "Texture UV", "Metpet"].map((type) => (
+        <label key={type} className="inline-flex items-center mr-4">
           <input
             type="radio"
-            value="Paper Board"
-            checked={punchingType === "Paper Board"}
-            onChange={(e) => setPunchingType(e.target.value)}
+            value={type}
+            checked={coatingType === type}
+            onChange={(e) => setCoatingType(e.target.value)}
             className="form-radio h-4 w-4 text-blue-600"
           />
-          <span className="ml-2">Paper Board (₹500 per 1000)</span>
+          <span className="ml-2">{type}</span>
         </label>
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            value="E-Flute"
-            checked={punchingType === "E-Flute"}
-            onChange={(e) => setPunchingType(e.target.value)}
-            className="form-radio h-4 w-4 text-blue-600"
-          />
-          <span className="ml-2">E-Flute (₹1000 per 1000)</span>
-        </label>
-      </fieldset>
-      <h3 className="text-lg font-bold text-gray-900">Punching Cost: {punchingCost.toFixed(2)}/-</h3>
-      
+      ))}
+    </fieldset>
+
+    <label className="block text-gray-700 mt-4">Height (in):</label>
+    <input
+      type="number"
+      onChange={(e) => setCoatingHeight(Number(e.target.value))}
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
+    />
+
+    <label className="block text-gray-700 mt-4">Width (in):</label>
+    <input
+      type="number"
+      onChange={(e) => setCoatingWidth(Number(e.target.value))}
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
+    />
+
+    <button
+      onClick={calculateCoatingCost}
+      className="bg-blue-500 text-white p-2 w-full mt-4 rounded"
+    >
+      Calculate Coating Cost
+    </button>
+
+    <h3 className="text-lg font-bold text-gray-900 mt-4">
+      Coating Cost: ₹{coatingPrice.toFixed(2)}/-
+    </h3>
+  </div>
+
+  {/* Die Cost Section - 30% */}
+  <div className="w-full lg:w-3/10 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-lg font-semibold text-gray-900 mb-4">Die Cost</h2>
+
+    <label className="block text-gray-700">Die Cost (Default: ₹500):</label>
+    <input
+      type="number"
+      value={dieCost}
+      onChange={(e) => setDieCost(Number.parseInt(e.target.value))}
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
+    />
+
+    <h3 className="text-lg font-bold text-gray-900 mt-4">
+      Die Cost: ₹{dieCost}/-
+    </h3>
+  </div>
+
+  {/* Punching Section - 30% */}
+  <div className="w-full lg:w-3/10 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-lg font-semibold text-gray-900 mb-4">Punching</h2>
+
+    <fieldset>
+      <legend className="block text-gray-700">Select Punching Type:</legend>
+      <label className="inline-flex items-center mr-4">
+        <input
+          type="radio"
+          value="Paper Board"
+          checked={punchingType === "Paper Board"}
+          onChange={(e) => setPunchingType(e.target.value)}
+          className="form-radio h-4 w-4 text-blue-600"
+        />
+        <span className="ml-2">Paper Board (₹500 per 1000)</span>
+      </label>
+      <label className="inline-flex items-center">
+        <input
+          type="radio"
+          value="E-Flute"
+          checked={punchingType === "E-Flute"}
+          onChange={(e) => setPunchingType(e.target.value)}
+          className="form-radio h-4 w-4 text-blue-600"
+        />
+        <span className="ml-2">E-Flute (₹1000 per 1000)</span>
+      </label>
+    </fieldset>
+
+    <h3 className="text-lg font-bold text-gray-900 mt-4">
+      Punching Cost: ₹{punchingCost.toFixed(2)}/-
+    </h3>
+  </div>
+</div>
+
       <hr className="my-6" />
 
       {/* Cutting Section */}
@@ -509,64 +547,95 @@ export default function Home() {
 
       
 {/* Pasting Section */}
-<h2 className="text-xl font-bold text-gray-900">Pasting</h2>
-<fieldset>
-  <legend className="block text-gray-700">Pasting Type:</legend>
-  <label className="inline-flex items-center mr-4">
-    <input
-      type="radio"
-      value="Bottom Lock"
-      checked={pastingType === "Bottom Lock"}
-      onChange={(e) => setPastingType(e.target.value)}
-      className="form-radio h-4 w-4 text-blue-600"
-    />
-    <span className="ml-2">Bottom Lock</span>
-  </label>
-  <label className="inline-flex items-center">
-    <input
-      type="radio"
-      value="Side Pasting"
-      checked={pastingType === "Side Pasting"}
-      onChange={(e) => setPastingType(e.target.value)}
-      className="form-radio h-4 w-4 text-blue-600"
-    />
-    <span className="ml-2">Side Pasting</span>
-  </label>
-</fieldset>
 
-<label className="block text-gray-700">Number of Ups:</label>
-<input
-  type="number"
-  value={ups}
-  onChange={(e) => setUps(Number.parseInt(e.target.value))}
-  className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-/>
 
-<h3 className="text-lg font-bold text-gray-900">Pasting Cost: {pastingCost.toFixed(2)}/-</h3>
+<div className="flex flex-wrap lg:flex-nowrap gap-6">
+  {/* Pasting Section - 50% */}
+  <div className="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-xl font-bold text-gray-900">Pasting</h2>
+
+    <fieldset>
+      <legend className="block text-gray-700">Pasting Type:</legend>
+      <label className="inline-flex items-center mr-4">
+        <input
+          type="radio"
+          value="Bottom Lock"
+          checked={pastingType === "Bottom Lock"}
+          onChange={(e) => setPastingType(e.target.value)}
+          className="form-radio h-4 w-4 text-blue-600"
+        />
+        <span className="ml-2">Bottom Lock</span>
+      </label>
+      <label className="inline-flex items-center">
+        <input
+          type="radio"
+          value="Side Pasting"
+          checked={pastingType === "Side Pasting"}
+          onChange={(e) => setPastingType(e.target.value)}
+          className="form-radio h-4 w-4 text-blue-600"
+        />
+        <span className="ml-2">Side Pasting</span>
+      </label>
+    </fieldset>
+
+    {/* Number of Ups with + / - buttons */}
+    <label className="block text-gray-700 mt-4">Number of Ups:</label>
+    <div className="flex items-center border border-gray-300 rounded-md w-fit">
+      <button
+        onClick={() => setUps((prev) => Math.max(1, prev - 1))}
+        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-l-md"
+      >
+        -
+      </button>
+      <input
+        type="number"
+        value={ups}
+        onChange={(e) => setUps(Number.parseInt(e.target.value))}
+        className="w-16 text-center border-x border-gray-300"
+      />
+      <button
+        onClick={() => setUps((prev) => prev + 1)}
+        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-r-md"
+      >
+        +
+      </button>
+    </div>
+
+    <h3 className="text-lg font-bold text-gray-900 mt-4">
+      Pasting Cost: ₹{pastingCost.toFixed(2)}/-
+    </h3>
+  </div>
+
+  {/* Transport Section - 50% */}
+  <div className="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-6">
+    <h2 className="text-xl font-bold text-gray-900">Transport</h2>
+
+    <label className="block text-gray-700">Enter Transport Cost:</label>
+    <input
+      type="number"
+      value={transportCost}
+      onChange={(e) => setTransportCost(Number.parseInt(e.target.value))}
+      className="border border-gray-300 p-2 w-full rounded-md bg-white"
+    />
+
+    <h3 className="text-lg font-bold text-gray-900 mt-4">
+      Transport Cost: ₹{transportCost}/-
+    </h3>
+  </div>
+</div>
 
 <hr className="my-6" />
 
-{/* Transport Section */}
-<h2 className="text-xl font-bold text-gray-900">Transport</h2>
-      <input
-        type="number"
-        value={transportCost}
-        onChange={(e) => setTransportCost(Number.parseInt(e.target.value))}
-        className="border border-gray-300 p-2 mb-4 rounded-md bg-white"
-      />
-      <h3 className="text-lg font-bold text-gray-900">Transport Cost: {transportCost}/-</h3>
-      
-      <hr className="my-6" />
 
       {/* Total Cost */}
       
 
      
-      <h3 className="text-lg font-bold text-gray-900">
+      <h3 className="text-6xl font-bold text-center py-12 text-gray-900">
   Total Cost: ₹{totalCost.toFixed(2)}/-
 </h3>
 {/* Display Final Cost */}
-<h3 className="text-xl font-bold text-gray-900">
+<h3 className="text-6xl font-bold text-center py-12 text-gray-900">
       Final Cost: {finalCost}/-
     </h3>
 
