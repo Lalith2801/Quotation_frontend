@@ -261,16 +261,19 @@ export default function Home() {
 
   useEffect(() => {
     const rate = pastingType === "Bottom Lock" ? 0.45 : 0.25
-    setPastingCost(ups * quantity * rate)
+    setPastingCost(ups * (quantity+ wastage) * rate)
   }, [ups, quantity, pastingType])
 
   const [totalCost, setTotalCost] = useState(0)
+  const [percentage, setPercentage] = useState(16); // Default 16%
 
   useEffect(() => {
-    setTotalCost(boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost)
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost])
-
-  const finalCost = ((totalCost / (quantity * ups)) * 1.16).toFixed(2)
+    setTotalCost(
+      boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost
+    );
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost]);
+  
+  const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2);
 
   useEffect(() => {
     if (darkMode) {
@@ -279,6 +282,21 @@ export default function Home() {
       document.documentElement.classList.remove("dark")
     }
   }, [darkMode])
+
+
+
+
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------///
+
+
+
+
+
+
 
   return (
     <div className="p-4 md:p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
@@ -625,8 +643,37 @@ export default function Home() {
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
             Transport Cost: ₹{transportCost}/-
           </h3>
+          <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
+  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Final Cost Calculation</h2>
+
+  <label className="block text-gray-700 dark:text-gray-300">Percentage:</label>
+    
+    <button
+      onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
+      className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-gray-200"
+    >
+      -
+    </button>
+
+    <input
+      type="number"
+      value={percentage}
+      onChange={(e) => setPercentage(Number(e.target.value))}
+      className="border border-gray-300 dark:border-gray-700 p-2 rounded-md w-20 text-center bg-white dark:bg-gray-800"
+    />
+
+    <button
+      onClick={() => setPercentage((prev) => prev + 1)}
+      className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-gray-200"
+    >
+      +
+    </button>
+  
+  </div>
+
         </div>
       </div>
+      
 
       <hr className="my-6" />
 
