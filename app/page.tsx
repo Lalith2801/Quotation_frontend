@@ -245,20 +245,36 @@ export default function Home() {
       setPrice(finalPrice)
     }
   }, [selectedMachine, selectedPrintType, quantity, machines])
+  const [metpetPrice, setMetpetPrice] = useState(0);
+  const [baseCoatingCost, setBaseCoatingCost] = useState(0);
 
   const calculateCoatingCost = () => {
-    let rate = 0
-    if (coatingType === "Gloss") rate = 0.38
-    else if (coatingType === "Matt") rate = 0.45
-    else if (coatingType === "Texture UV") rate = 0.8
-    else if (coatingType === "Metpet") rate = 1.45
+    let rate = 0;
+    if (coatingType === "Gloss") rate = 0.38;
+    else if (coatingType === "Matt") rate = 0.45;
+    else if (coatingType === "Texture UV") rate = 0.8;
+    else if (coatingType === "Metpet") rate = 1.45;
+    else if (coatingType === "3d") rate = 2.25;
 
-    const totalQuantity = quantity + wastage
-    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity
+    const totalQuantity = quantity + wastage;
+    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity;
 
-    setCoatingPrice(cost)
-  }
+    setCoatingPrice(cost);
 
+    // If 3D is selected, calculate Metpet price separately
+    if (coatingType === "3d") {
+        const metpetCost = ((coatingHeight * coatingWidth * 0.8) / 100) * totalQuantity;
+        setMetpetPrice(metpetCost);
+        
+        // Base coating cost: ₹1 per sheet (including wastage)
+        setBaseCoatingCost(totalQuantity * 1);
+    } else {
+        setMetpetPrice(0);
+        setBaseCoatingCost(0);
+    }
+};
+
+  
   useEffect(() => {
     const rate = pastingType === "Bottom Lock" ? 0.45 : 0.25
     setPastingCost(ups * (quantity+ wastage) * rate)
@@ -269,9 +285,10 @@ export default function Home() {
 
   useEffect(() => {
     setTotalCost(
-      boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost
+      boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost + baseCoatingCost + metpetPrice
     );
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost]);
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost, baseCoatingCost, metpetPrice ]);
+
   
   const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2);
 
@@ -477,7 +494,7 @@ export default function Home() {
           <fieldset>
             <legend className="block text-gray-700 dark:text-gray-300">Type:</legend>
             <div className="grid grid-cols-2 gap-2">
-              {["Gloss", "Matt", "Texture UV", "Metpet"].map((type) => (
+              {["Gloss", "Matt", "Texture UV", "Metpet", "3d"].map((type) => (
                 <label key={type} className="inline-flex items-center">
                   <input
                     type="radio"
@@ -514,8 +531,19 @@ export default function Home() {
           </button>
 
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
-            Coating Cost: ₹{coatingPrice.toFixed(2)}/-
-          </h3>
+  Coating Cost: ₹{coatingPrice.toFixed(2)}/-
+</h3>
+
+{coatingType === "3d" && (
+  <>
+    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-2">
+      Metpet Cost: ₹{metpetPrice.toFixed(2)}/-
+    </h3>
+    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-2">
+      Base Coating Cost: ₹{baseCoatingCost.toFixed(2)}/-
+    </h3>
+  </>
+)}
         </div>
 
         <div className="w-full lg:w-3/5 flex flex-col sm:flex-row gap-6">
@@ -685,5 +713,9 @@ export default function Home() {
       </h3>
     </div>
   )
+}
+
+function setMetpetPrice(metpetCost: number) {
+  throw new Error("Function not implemented.")
 }
 
