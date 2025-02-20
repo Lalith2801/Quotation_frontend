@@ -245,52 +245,61 @@ export default function Home() {
       setPrice(finalPrice)
     }
   }, [selectedMachine, selectedPrintType, quantity, machines])
-  const [metpetPrice, setMetpetPrice] = useState(0);
-  const [baseCoatingCost, setBaseCoatingCost] = useState(0);
-
+  const [metpetPrice, setMetpetPrice] = useState(0)
+  const [baseCoatingCost, setBaseCoatingCost] = useState(0)
   const calculateCoatingCost = () => {
-    let rate = 0;
-    if (coatingType === "Gloss") rate = 0.38;
-    else if (coatingType === "Matt") rate = 0.45;
-    else if (coatingType === "Texture UV") rate = 0.8;
-    else if (coatingType === "Metpet") rate = 1.45;
-    else if (coatingType === "3d") rate = 2.25;
+    let rate = 0
+    if (coatingType === "Gloss") rate = 0.38
+    else if (coatingType === "Matt") rate = 0.45
+    else if (coatingType === "Texture UV") rate = 0.8
+    else if (coatingType === "Metpet") rate = 1.45
+    else if (coatingType === "3d") rate = 2.25
 
-    const totalQuantity = quantity + wastage;
-    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity;
+    const totalQuantity = quantity + wastage
+    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity
 
-    setCoatingPrice(cost);
+    setCoatingPrice(cost)
 
     // If 3D is selected, calculate Metpet price separately
     if (coatingType === "3d") {
-        const metpetCost = ((coatingHeight * coatingWidth * 0.8) / 100) * totalQuantity;
-        setMetpetPrice(metpetCost);
-        
-        // Base coating cost: ₹1 per sheet (including wastage)
-        setBaseCoatingCost(totalQuantity * 1);
+      const metpetCost = ((coatingHeight * coatingWidth * 0.8) / 100) * totalQuantity
+      setMetpetPrice(metpetCost)
+
+      // Base coating cost: ₹1 per sheet (including wastage)
+      setBaseCoatingCost(totalQuantity * 1)
     } else {
-        setMetpetPrice(0);
-        setBaseCoatingCost(0);
+      setMetpetPrice(0)
+      setBaseCoatingCost(0)
     }
-};
+  }
 
-  
   useEffect(() => {
-    const rate = pastingType === "Bottom Lock" ? 0.45 : 0.25
-    setPastingCost(ups * (quantity+ wastage) * rate)
-  }, [ups, quantity, pastingType])
+    let rate = 0
 
+    if (pastingType === "Bottom Lock") rate = 0.45
+    else if (pastingType === "Side Pasting") rate = 0.25
+    else if (pastingType === "Bottom Lock + Side Pasting") rate = 0.45 + 0.25 // Both costs combined
+
+    setPastingCost(ups * (quantity + wastage) * rate)
+  }, [ups, quantity, wastage, pastingType])
   const [totalCost, setTotalCost] = useState(0)
-  const [percentage, setPercentage] = useState(16); // Default 16%
+  const [percentage, setPercentage] = useState(16) // Default 16%
 
   useEffect(() => {
     setTotalCost(
-      boardCost + price + coatingPrice + dieCost + punchingCost + pastingCost + transportCost + baseCoatingCost + metpetPrice
-    );
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost, baseCoatingCost, metpetPrice ]);
+      boardCost +
+        price +
+        coatingPrice +
+        dieCost +
+        punchingCost +
+        pastingCost +
+        transportCost +
+        baseCoatingCost +
+        metpetPrice,
+    )
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost, baseCoatingCost, metpetPrice])
 
-  
-  const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2);
+  const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2)
 
   useEffect(() => {
     if (darkMode) {
@@ -300,46 +309,33 @@ export default function Home() {
     }
   }, [darkMode])
 
-
-
-
-
-
-
-
-//---------------------------------------------------------------------------------------------------------------------------------------------///
-
-
-
-
-
-
+  //---------------------------------------------------------------------------------------------------------------------------------------------///
 
   return (
-    <div className="p-4 md:p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
+    <div className="p-4 md:p-6 bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text min-h-screen">
       <button
         onClick={() => setDarkMode(!darkMode)}
-        className="fixed top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-800"
+        className="fixed top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-dark-surface"
       >
         {darkMode ? (
           <Sun className="h-6 w-6 text-yellow-500" />
         ) : (
-          <Moon className="h-6 w-6 text-gray-800 dark:text-gray-200" />
+          <Moon className="h-6 w-6 text-gray-800 dark:text-dark-text" />
         )}
       </button>
-      <h1 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-gray-100">
+      <h1 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
         Offset Quotation Maker
       </h1>
 
       <div className="flex flex-col md:flex-row gap-6 md:items-stretch">
-        <div className="w-full md:w-2/5 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Board Selection</h2>
+        <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Board Selection</h2>
 
-          <label className="block text-gray-700 dark:text-gray-300">Board Type:</label>
+          <label className="block text-gray-700 dark:text-dark-text">Board Type:</label>
           <select
             value={selectedBoard}
             onChange={(e) => setSelectedBoard(e.target.value as keyof typeof boardPrices)}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           >
             {Object.keys(boardPrices).map((board) => (
               <option key={board} value={board}>
@@ -348,11 +344,11 @@ export default function Home() {
             ))}
           </select>
 
-          <label className="block text-gray-700 dark:text-gray-300 mt-4">Board Size:</label>
+          <label className="block text-gray-700 dark:text-dark-text mt-4">Board Size:</label>
           <select
             value={selectedSize}
             onChange={(e) => setSelectedSize(e.target.value)}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             disabled={!selectedBoard}
           >
             <option value="">Select Size</option>
@@ -366,11 +362,11 @@ export default function Home() {
 
           {selectedSize && selectedBoard && (
             <>
-              <label className="block text-gray-700 dark:text-gray-300 mt-4">GSM:</label>
+              <label className="block text-gray-700 dark:text-dark-text mt-4">GSM:</label>
               <select
                 value={selectedGSM}
                 onChange={(e) => setSelectedGSM(e.target.value)}
-                className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+                className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
                 disabled={!selectedSize}
               >
                 <option value="">Select GSM</option>
@@ -390,7 +386,7 @@ export default function Home() {
           <div className="flex items-center space-x-2 mt-4">
             <button
               onClick={() => setDivision((prev) => Math.max(1, prev - 1))}
-              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md"
+              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-dark-text rounded-md"
             >
               −
             </button>
@@ -398,34 +394,34 @@ export default function Home() {
               type="number"
               value={division}
               onChange={(e) => setDivision(Number.parseInt(e.target.value) || 1)}
-              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-20 text-center rounded-md bg-white dark:bg-gray-800"
+              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-20 text-center rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
             <button
               onClick={() => setDivision((prev) => prev + 1)}
-              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md"
+              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-dark-text rounded-md"
             >
               +
             </button>
           </div>
 
-          <label className="block text-gray-700 dark:text-gray-300 mt-4">Quantity:</label>
+          <label className="block text-gray-700 dark:text-dark-text mt-4">Quantity:</label>
           <input
             type="number"
             value={quantity}
             onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           />
 
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mt-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text mt-4">
             Board Cost: ₹{boardCost ? boardCost.toFixed(2) : "0.00"}/-
           </h3>
         </div>
 
-        <div className="w-full md:w-3/5 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6 mt-6 md:mt-0">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Printing Cost Calculation</h2>
+        <div className="w-full md:w-3/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6 mt-6 md:mt-0">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Printing Cost Calculation</h2>
 
           <fieldset>
-            <legend className="block text-gray-700 dark:text-gray-300">Machine:</legend>
+            <legend className="block text-gray-700 dark:text-dark-text">Machine:</legend>
             <div className="grid grid-cols-2 gap-2">
               {Object.keys(machines.pricingData).map((machine) => (
                 <label key={machine} className="inline-flex items-center">
@@ -444,7 +440,7 @@ export default function Home() {
 
           {machines.pricingData[selectedMachine] && (
             <fieldset className="mt-4">
-              <legend className="block text-gray-700 dark:text-gray-300">Printing Type:</legend>
+              <legend className="block text-gray-700 dark:text-dark-text">Printing Type:</legend>
               <div className="grid grid-cols-2 gap-2">
                 {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
                   <label key={type} className="inline-flex items-center">
@@ -464,35 +460,37 @@ export default function Home() {
 
           <fieldset className="mt-4">
             {/* Quantity Input */}
-            <label className="block text-gray-700 dark:text-gray-300">Quantity:</label>
+            <label className="block text-gray-700 dark:text-dark-text">Quantity:</label>
             <input
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(Number.parseInt(e.target.value))}
-              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 mb-4 rounded-md bg-white dark:bg-gray-800"
+              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 mb-4 rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
           </fieldset>
           {/* Wastage Input */}
-          <label className="block text-gray-700 dark:text-gray-300">Wastage (Default: 200):</label>
+          <label className="block text-gray-700 dark:text-dark-text">Wastage (Default: 200):</label>
           <input
             type="number"
             value={wastage}
             onChange={(e) => setWastage(Number.parseInt(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 mb-4 rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 mb-4 rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           />
 
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-4">Estimated Print Price: ₹{price}/-</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text mt-4">
+            Estimated Print Price: ₹{price}/-
+          </h2>
         </div>
       </div>
 
       <hr className="my-6" />
 
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
-        <div className="w-full lg:w-2/5 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Coating & Lamination</h2>
+        <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Coating & Lamination</h2>
 
           <fieldset>
-            <legend className="block text-gray-700 dark:text-gray-300">Type:</legend>
+            <legend className="block text-gray-700 dark:text-dark-text">Type:</legend>
             <div className="grid grid-cols-2 gap-2">
               {["Gloss", "Matt", "Texture UV", "Metpet", "3d"].map((type) => (
                 <label key={type} className="inline-flex items-center">
@@ -509,63 +507,60 @@ export default function Home() {
             </div>
           </fieldset>
 
-          <label className="block text-gray-700 dark:text-gray-300 mt-4">Height (in):</label>
+          <label className="block text-gray-700 dark:text-dark-text mt-4">Height (in):</label>
           <input
             type="number"
             onChange={(e) => setCoatingHeight(Number(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           />
 
-          <label className="block text-gray-700 dark:text-gray-300 mt-4">Width (in):</label>
+          <label className="block text-gray-700 dark:text-dark-text mt-4">Width (in):</label>
           <input
             type="number"
             onChange={(e) => setCoatingWidth(Number(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           />
-
           <button
             onClick={calculateCoatingCost}
             className="bg-blue-500 dark:bg-blue-700 text-white p-2 w-full mt-4 rounded"
           >
             Calculate Coating Cost
           </button>
-
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
-  Coating Cost: ₹{coatingPrice.toFixed(2)}/-
-</h3>
-
-{coatingType === "3d" && (
-  <>
-    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-2">
-      Metpet Cost: ₹{metpetPrice.toFixed(2)}/-
-    </h3>
-    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-2">
-      Base Coating Cost: ₹{baseCoatingCost.toFixed(2)}/-
-    </h3>
-  </>
-)}
+          <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
+            Coating Cost: ₹{coatingPrice.toFixed(2)}/-
+          </h3>
+          {coatingType === "3d" && (
+            <>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
+                Metpet Cost: ₹{metpetPrice.toFixed(2)}/-
+              </h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
+                Base Coating Cost: ₹{baseCoatingCost.toFixed(2)}/-
+              </h3>
+            </>
+          )}
         </div>
 
         <div className="w-full lg:w-3/5 flex flex-col sm:flex-row gap-6">
-          <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Die Cost</h2>
+          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Die Cost</h2>
 
-            <label className="block text-gray-700 dark:text-gray-300">Die Cost (Default: ₹500):</label>
+            <label className="block text-gray-700 dark:text-dark-text">Die Cost (Default: ₹500):</label>
             <input
               type="number"
               value={dieCost}
               onChange={(e) => setDieCost(Number.parseInt(e.target.value))}
-              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
 
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">Die Cost: ₹{dieCost}/-</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">Die Cost: ₹{dieCost}/-</h3>
           </div>
 
-          <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Punching</h2>
+          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Punching</h2>
 
             <fieldset>
-              <legend className="block text-gray-700 dark:text-gray-300">Select Punching Type:</legend>
+              <legend className="block text-gray-700 dark:text-dark-text">Select Punching Type:</legend>
               <div className="grid grid-cols-2 gap-2">
                 <label className="inline-flex items-center">
                   <input
@@ -590,7 +585,7 @@ export default function Home() {
               </div>
             </fieldset>
 
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
               Punching Cost: ₹{punchingCost.toFixed(2)}/-
             </h3>
           </div>
@@ -600,11 +595,11 @@ export default function Home() {
       <hr className="my-6" />
 
       <div className="flex flex-col sm:flex-row gap-6 mt-6">
-        <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Pasting</h2>
+        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Pasting</h2>
 
           <fieldset>
-            <legend className="block text-gray-700 dark:text-gray-300">Pasting Type:</legend>
+            <legend className="block text-gray-700 dark:text-dark-text">Pasting Type:</legend>
             <div className="grid grid-cols-2 gap-2">
               <label className="inline-flex items-center">
                 <input
@@ -626,15 +621,25 @@ export default function Home() {
                 />
                 <span className="ml-2">Side Pasting</span>
               </label>
+              <label className="inline-flex items-center col-span-2">
+                <input
+                  type="radio"
+                  value="Bottom Lock + Side Pasting"
+                  checked={pastingType === "Bottom Lock + Side Pasting"}
+                  onChange={(e) => setPastingType(e.target.value)}
+                  className="form-radio h-4 w-4 text-blue-600"
+                />
+                <span className="ml-2">Bottom Lock + Side Pasting</span>
+              </label>
             </div>
           </fieldset>
 
           {/* Number of Ups with + / - buttons */}
-          <label className="block text-gray-700 dark:text-gray-300 mt-4">Number of Ups:</label>
+          <label className="block text-gray-700 dark:text-dark-text mt-4">Number of Ups:</label>
           <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-md w-fit">
             <button
               onClick={() => setUps((prev) => Math.max(1, prev - 1))}
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-gray-200"
+              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               -
             </button>
@@ -642,73 +647,70 @@ export default function Home() {
               type="number"
               value={ups}
               onChange={(e) => setUps(Number.parseInt(e.target.value))}
-              className="w-16 text-center border-x border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-gray-800"
+              className="w-16 text-center border-x border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
             <button
               onClick={() => setUps((prev) => prev + 1)}
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-r-md text-gray-700 dark:text-gray-200"
+              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-r-md text-gray-700 dark:text-dark-text"
             >
               +
             </button>
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
             Pasting Cost: ₹{pastingCost.toFixed(2)}/-
           </h3>
         </div>
 
-        <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Transport</h2>
+        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Transport</h2>
 
-          <label className="block text-gray-700 dark:text-gray-300">Enter Transport Cost:</label>
+          <label className="block text-gray-700 dark:text-dark-text">Enter Transport Cost:</label>
           <input
             type="number"
             value={transportCost}
             onChange={(e) => setTransportCost(Number.parseInt(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800"
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
           />
 
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
             Transport Cost: ₹{transportCost}/-
           </h3>
-          <div className="w-full sm:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 md:p-6">
-  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Final Cost Calculation</h2>
+          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Final Cost Calculation</h2>
 
-  <label className="block text-gray-700 dark:text-gray-300">Percentage:</label>
-    
-    <button
-      onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
-      className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-gray-200"
-    >
-      -
-    </button>
+            <label className="block text-gray-700 dark:text-dark-text">Percentage:</label>
 
-    <input
-      type="number"
-      value={percentage}
-      onChange={(e) => setPercentage(Number(e.target.value))}
-      className="border border-gray-300 dark:border-gray-700 p-2 rounded-md w-20 text-center bg-white dark:bg-gray-800"
-    />
+            <button
+              onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
+              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+            >
+              -
+            </button>
 
-    <button
-      onClick={() => setPercentage((prev) => prev + 1)}
-      className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-gray-200"
-    >
-      +
-    </button>
-  
-  </div>
+            <input
+              type="number"
+              value={percentage}
+              onChange={(e) => setPercentage(Number(e.target.value))}
+              className="border border-gray-300 dark:border-gray-700 p-2 rounded-md w-20 text-center bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+            />
 
+            <button
+              onClick={() => setPercentage((prev) => prev + 1)}
+              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
-      
 
       <hr className="my-6" />
 
-      <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-gray-100">
+      <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
         Total Cost: ₹{totalCost.toFixed(2)}/-
       </h3>
-      <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-gray-100">
+      <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
         Final Cost: {finalCost}/-
       </h3>
     </div>
