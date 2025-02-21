@@ -278,7 +278,6 @@ export default function Home() {
 
     if (pastingType === "Bottom Lock") rate = 0.45
     else if (pastingType === "Side Pasting") rate = 0.25
-    else if (pastingType === "Bottom Lock + Side Pasting") rate = 0.45 + 0.25 // Both costs combined
 
     setPastingCost(ups * (quantity + wastage) * rate)
   }, [ups, quantity, wastage, pastingType])
@@ -620,16 +619,6 @@ export default function Home() {
                   className="form-radio h-4 w-4 text-blue-600"
                 />
                 <span className="ml-2">Side Pasting</span>
-              </label>
-              <label className="inline-flex items-center col-span-2">
-                <input
-                  type="radio"
-                  value="Bottom Lock + Side Pasting"
-                  checked={pastingType === "Bottom Lock + Side Pasting"}
-                  onChange={(e) => setPastingType(e.target.value)}
-                  className="form-radio h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2">Bottom Lock + Side Pasting</span>
               </label>
             </div>
           </fieldset>
