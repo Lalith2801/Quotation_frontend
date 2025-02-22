@@ -510,10 +510,15 @@ const isCustomSize = !availableSizes.includes(selectedSize);
                     value={machine}
                     checked={selectedMachine === machine}
                     onChange={(e) => setSelectedMachine(e.target.value)}
-                    className="form-radio h-4 w-4 text-blue-600"
-                  />
-                  <span className="ml-2">{machine}</span>
-                </label>
+                    className="peer hidden"
+                    />
+                    <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center transition-all duration-200">
+                      {selectedMachine === machine && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+                      )}
+                    </div>
+                    <span className="ml-2 text-gray-800 dark:text-gray-300">{machine}</span>
+                  </label>
               ))}
             </div>
           </fieldset>
@@ -523,16 +528,21 @@ const isCustomSize = !availableSizes.includes(selectedSize);
               <legend className="block text-gray-700 dark:text-dark-text">Printing Type:</legend>
               <div className="grid grid-cols-2 gap-2">
                 {Object.keys(machines.pricingData[selectedMachine]).map((type) => (
-                  <label key={type} className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      value={type}
-                      checked={selectedPrintType === type}
-                      onChange={(e) => setSelectedPrintType(e.target.value)}
-                      className="form-radio h-4 w-4 text-blue-600"
-                    />
-                    <span className="ml-2">{type.replace("_", " ")}</span>
-                  </label>
+                   <label key={type} className="inline-flex items-center cursor-pointer">
+                   <input
+                     type="radio"
+                     value={type}
+                     checked={selectedPrintType === type}
+                     onChange={(e) => setSelectedPrintType(e.target.value)}
+                     className="peer hidden"
+                   />
+                   <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center">
+                     {selectedPrintType === type && (
+                       <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+                     )}
+                   </div>
+                   <span className="ml-2 text-gray-800 dark:text-gray-300">{type.replace("_", " ")}</span>
+                 </label>
                 ))}
               </div>
             </fieldset>
@@ -579,11 +589,16 @@ const isCustomSize = !availableSizes.includes(selectedSize);
                     value={type}
                     checked={coatingType === type}
                     onChange={(e) => setCoatingType(e.target.value)}
-                    className="form-radio h-4 w-4 text-blue-600"
-                  />
-                  <span className="ml-2">{type}</span>
-                </label>
-              ))}
+                    className="peer hidden"
+                    />
+                    <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center">
+                      {coatingType === type && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white "></div>
+                      )}
+                    </div>
+                    <span className="ml-2 text-gray-800 dark:text-gray-300">{type}</span>
+                  </label>
+                  ))}
             </div>
           </fieldset>
 
@@ -602,7 +617,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           />
           <button
             onClick={calculateCoatingCost}
-            className="bg-blue-500 dark:bg-blue-700 text-white p-2 w-full mt-4 rounded"
+            className="bg-black dark:bg-gray text-white p-2 w-full mt-4 rounded"
           >
             Calculate Coating Cost
           </button>
@@ -642,28 +657,45 @@ const isCustomSize = !availableSizes.includes(selectedSize);
             <fieldset>
               <legend className="block text-gray-700 dark:text-dark-text">Select Punching Type:</legend>
               <div className="grid grid-cols-2 gap-2">
-                <label className="inline-flex items-center">
+              <label className="inline-flex items-center cursor-pointer">
                   <input
                     type="radio"
                     value="Paper Board"
                     checked={punchingType === "Paper Board"}
                     onChange={(e) => setPunchingType(e.target.value)}
-                    className="form-radio h-4 w-4 text-blue-600"
+                    className="peer hidden"
                   />
-                  <span className="ml-2">Paper Board (₹500 per 1000)</span>
+                  <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center transition-all duration-200">
+                    {punchingType === "Paper Board" && (
+                      <div className="h-2.5 w-2.5 rounded-full  bg-black dark:bg-white"></div>
+                    )}
+                  </div>
+                  <span className="ml-2 text-gray-800 dark:text-gray-300">
+                    Paper Board (₹500 per 1000)
+                  </span>
                 </label>
-                <label className="inline-flex items-center">
+                
+                <label className="inline-flex items-center cursor-pointer">
                   <input
                     type="radio"
                     value="E-Flute"
                     checked={punchingType === "E-Flute"}
                     onChange={(e) => setPunchingType(e.target.value)}
-                    className="form-radio h-4 w-4 text-blue-600"
+                    className="peer hidden"
                   />
-                  <span className="ml-2">E-Flute (₹1000 per 1000)</span>
+                  <div className="h-5 w-5 rounded-full border-2 border-gray-400dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center transition-all duration-200">
+                    {punchingType === "E-Flute" && (
+                      <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+                    )}
+                  </div>
+                  <span className="ml-2 text-gray-800 dark:text-gray-300">
+                    E-Flute (₹1000 per 1000)
+                  </span>
                 </label>
+
               </div>
             </fieldset>
+            
 
             <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
               Punching Cost: ₹{punchingCost.toFixed(2)}/-
@@ -681,30 +713,40 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           <fieldset>
             <legend className="block text-gray-700 dark:text-dark-text">Pasting Type:</legend>
             <div className="grid grid-cols-2 gap-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  value="Bottom Lock"
-                  checked={pastingType === "Bottom Lock"}
-                  onChange={(e) => setPastingType(e.target.value)}
-                  className="form-radio h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2">Bottom Lock</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  value="Side Pasting"
-                  checked={pastingType === "Side Pasting"}
-                  onChange={(e) => setPastingType(e.target.value)}
-                  className="form-radio h-4 w-4 text-blue-600"
-                />
-                <span className="ml-2">Side Pasting</span>
-              </label>
+            <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              value="Bottom Lock"
+              checked={pastingType === "Bottom Lock"}
+              onChange={(e) => setPastingType(e.target.value)}
+              className="peer hidden"
+            />
+            <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center transition-all duration-200">
+              {pastingType === "Bottom Lock" && (
+                <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+              )}
+            </div>
+            <span className="ml-2 text-gray-800 dark:text-gray-300">Bottom Lock</span>
+          </label>
+
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              value="Side Pasting"
+              checked={pastingType === "Side Pasting"}
+              onChange={(e) => setPastingType(e.target.value)}
+              className="peer hidden"
+            />
+            <div className="h-5 w-5 rounded-full border-2 border-gray-400dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center transition-all duration-200">
+              {pastingType === "Side Pasting" && (
+                <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+              )}
+            </div>
+            <span className="ml-2 text-gray-800 dark:text-gray-300">Side Pasting</span>
+          </label>
+
             </div>
           </fieldset>
-
-          {/* Number of Ups with + / - buttons */}
           <label className="block text-gray-700 dark:text-dark-text mt-4">Number of Ups:</label>
           <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-md w-fit">
             <button
