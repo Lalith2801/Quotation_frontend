@@ -197,12 +197,12 @@ export default function Home() {
   }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage])
 
   useEffect(() => {
-    setPunchingCost(((quantity + wastage) / 1000) * punchingCostPerThousand)
+    setPunchingCost(((quantity) / 1000) * punchingCostPerThousand)
   }, [quantity, punchingCostPerThousand, wastage]) // Added wastage as a dependency
 
   useEffect(() => {
     const rate = punchingType === "Paper Board" ? 500 : 1000
-    setPunchingCost(((quantity + wastage) / 1000) * rate)
+    setPunchingCost(((quantity) / 1000) * rate)
   }, [quantity, punchingType, wastage]) // Added wastage as a dependency
 
   useEffect(() => {
@@ -248,30 +248,45 @@ export default function Home() {
   const [metpetPrice, setMetpetPrice] = useState(0)
   const [baseCoatingCost, setBaseCoatingCost] = useState(0)
   const calculateCoatingCost = () => {
-    let rate = 0
-    if (coatingType === "Gloss") rate = 0.38
-    else if (coatingType === "Matt") rate = 0.45
-    else if (coatingType === "Texture UV") rate = 0.8
-    else if (coatingType === "Metpet") rate = 1.45
-    else if (coatingType === "3d") rate = 2.25
+    let rate = 0;
+    if (coatingType === "Gloss") rate = 0.38;
+    else if (coatingType === "Matt") rate = 0.45;
+    else if (coatingType === "Texture UV") rate = 0.8;
+    else if (coatingType === "Metpet") rate = 1.45;
+    else if (coatingType === "3d") rate = 2.25;
 
-    const totalQuantity = quantity + wastage
-    const cost = ((coatingHeight * coatingWidth * rate) / 100) * totalQuantity
+    const totalQuantity = quantity + wastage;
 
-    setCoatingPrice(cost)
+    // Step 1: Multiply width, height, and rate
+    let costPerSheet = coatingHeight * coatingWidth * rate;
+
+    // Step 2: Divide by 100
+    costPerSheet /= 100;
+
+    // Step 3: Take only the integer part (truncate decimals)
+    costPerSheet = Math.floor(costPerSheet * 100) / 100; // Ensures only two decimal places
+
+    // Step 4: Multiply by total quantity
+    const cost = costPerSheet * totalQuantity;
+
+    setCoatingPrice(cost);
 
     // If 3D is selected, calculate Metpet price separately
     if (coatingType === "3d") {
-      const metpetCost = ((coatingHeight * coatingWidth * 0.8) / 100) * totalQuantity
-      setMetpetPrice(metpetCost)
+        let metpetCostPerSheet = (coatingHeight * coatingWidth * 0.8) / 100;
+        metpetCostPerSheet = Math.floor(metpetCostPerSheet * 100) / 100; // Ensures only two decimal places
+        const metpetCost = metpetCostPerSheet * totalQuantity;
 
-      // Base coating cost: ₹1 per sheet (including wastage)
-      setBaseCoatingCost(totalQuantity * 1)
+        setMetpetPrice(metpetCost);
+
+        // Base coating cost: ₹1 per sheet (including wastage)
+        setBaseCoatingCost(totalQuantity * 1);
     } else {
-      setMetpetPrice(0)
-      setBaseCoatingCost(0)
+        setMetpetPrice(0);
+        setBaseCoatingCost(0);
     }
-  }
+};
+
 
   useEffect(() => {
     let rate = 0
@@ -279,7 +294,7 @@ export default function Home() {
     if (pastingType === "Bottom Lock") rate = 0.45
     else if (pastingType === "Side Pasting") rate = 0.25
 
-    setPastingCost(ups * (quantity + wastage) * rate)
+    setPastingCost(ups * (quantity) * rate)
   }, [ups, quantity, wastage, pastingType])
   const [totalCost, setTotalCost] = useState(0)
   const [percentage, setPercentage] = useState(16) // Default 16%
@@ -668,7 +683,7 @@ export default function Home() {
           <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Final Cost Calculation</h2>
 
-            <label className="block text-gray-700 dark:text-dark-text">Percentage:</label>
+            <label className="block text-gray-700 dark:text-dark-text"></label>
 
             <button
               onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
