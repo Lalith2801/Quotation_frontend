@@ -16,6 +16,7 @@ type PricingData = {
   }
 }
 
+
 export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
   const [selectedMachine, setSelectedMachine] = useState("")
@@ -23,7 +24,7 @@ export default function Home() {
   const [quantity, setQuantity] = useState(1000)
   const [wastage, setWastage] = useState(200)
   const [price, setPrice] = useState(0)
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
   // ✅ Board Pricing Data
   const boardPrices = {
@@ -112,6 +113,12 @@ export default function Home() {
   const [boardCost, setBoardCost] = useState(0)
   const [division, setDivision] = useState(1)
   const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("artPaper")
+  const [customSize, setCustomSize] = useState("");
+const [customPrice, setCustomPrice] = useState("");
+
+// Check if the selected size exists
+const availableSizes = Object.keys(boardPrices[selectedBoard].sizes);
+const isCustomSize = !availableSizes.includes(selectedSize);
 
   // Coating Calculation
   const [coatingType, setCoatingType] = useState("Gloss")
@@ -155,6 +162,8 @@ export default function Home() {
       .catch((error) => console.error("Error fetching pricing data:", error))
   }, [])
 
+  
+
   useEffect(() => {
     if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
       const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
@@ -172,29 +181,38 @@ export default function Home() {
   }, [selectedMachine, selectedPrintType, quantity, machines])
 
   useEffect(() => {
-    if (!boardPrices || !selectedBoard || !selectedSize || !selectedGSM) return
-
-    // Ensure selectedBoard is a valid key
-    if (!(selectedBoard in boardPrices)) return
-
-    const board = boardPrices[selectedBoard as keyof typeof boardPrices]
-
-    // Ensure selectedSize is a valid key
-    if (!(selectedSize in board.sizes)) return
-
-    const sizeData = board.sizes[selectedSize as keyof typeof board.sizes]
-
-    // Ensure selectedGSM is a valid key
-    if (!(selectedGSM in sizeData)) return
-
-    const boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0
-
-    if (boardPricePerSheet) {
-      const costPerDivision = boardPricePerSheet / division
-      const totalBoardCost = costPerDivision * (quantity + wastage)
-      setBoardCost(totalBoardCost)
+    if (!selectedBoard || !selectedSize || !selectedGSM || !division) return;
+  
+    let boardPricePerSheet = 0;
+  
+    // Check if the selected size exists in boardPrices
+    if (selectedBoard in boardPrices) {
+      const board = boardPrices[selectedBoard as keyof typeof boardPrices];
+  
+      // If the selected size is available
+      if (selectedSize in board.sizes) {
+        const sizeData = board.sizes[selectedSize as keyof typeof board.sizes];
+  
+        // If the selected GSM is available
+        if (selectedGSM in sizeData) {
+          boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0;
+        }
+      }
     }
-  }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage])
+  
+    // If custom size is selected, use custom price
+    if (!boardPricePerSheet && customPrice) {
+      boardPricePerSheet = parseFloat(customPrice);
+    }
+  
+    // Calculate total cost
+    const costPerDivision = boardPricePerSheet / division;
+    const totalBoardCost = costPerDivision * (quantity + wastage);
+  
+    setBoardCost(totalBoardCost);
+  }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage, customPrice]);
+  
+  
 
   useEffect(() => {
     setPunchingCost(((quantity) / 1000) * punchingCostPerThousand)
@@ -316,15 +334,36 @@ export default function Home() {
   const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2)
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
+    const savedTheme = localStorage.getItem("darkMode") === "true";
+    setDarkMode(savedTheme);
+    
+    // Apply theme immediately
+    if (savedTheme) {
+      document.documentElement.classList.add("dark");
     }
-  }, [darkMode])
+  }, []);
+
+  useEffect(() => {
+    if (darkMode !== null) {
+      if (darkMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      localStorage.setItem("darkMode", darkMode.toString());
+    }
+  }, [darkMode]);
+
+  // Prevent rendering until the theme is loaded
+  if (darkMode === null) return null;
 
   //---------------------------------------------------------------------------------------------------------------------------------------------///
 
+
+
+
+
+  
   return (
     <div className="p-4 md:p-6 bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text min-h-screen">
       <button
@@ -372,7 +411,19 @@ export default function Home() {
                   {size}
                 </option>
               ))}
+              <option value="custom">Custom Size</option>
           </select>
+
+          {/* Custom Size Input
+    {selectedSize === "custom" && (
+      <input
+        type="text"
+        placeholder="Enter Custom Size"
+        value={customSize}
+        onChange={(e) => setCustomSize(e.target.value)}
+        className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full mt-2 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+      />
+    )} */}
 
           {selectedSize && selectedBoard && (
             <>
@@ -396,6 +447,21 @@ export default function Home() {
               </select>
             </>
           )}
+
+          {/* Custom Price Input */}
+    {selectedSize === "custom" && (
+      <div className="mt-4">
+        <label className="block text-gray-700 dark:text-gray-300">Custom Price (₹):</label>
+        <input
+          type="number"
+          placeholder="Enter Custom Price"
+          value={customPrice}
+          onChange={(e) => setCustomPrice(e.target.value)}
+          className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+        />
+      </div>
+    )}
+
 
           <div className="flex items-center space-x-2 mt-4">
             <button
@@ -720,6 +786,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 function setMetpetPrice(metpetCost: number) {
   throw new Error("Function not implemented.")
