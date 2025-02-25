@@ -644,8 +644,8 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           </h2>
         </div>
       </div>
-
-      <hr className="my-6" />
+{/* 
+      <hr className="my-6" /> */}
 
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
@@ -777,7 +777,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
         </div>
       </div>
 
-      <hr className="my-6" />
+      {/* <hr className="my-6" /> */}
 
       <div className="flex flex-col sm:flex-row gap-6 mt-6">
         <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
@@ -890,7 +890,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
         </div>
       </div>
 
-      <hr className="my-6" />
+      {/* <hr className="my-6" /> */}
 
       <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
         Total Cost: ₹{totalCost.toFixed(2)}/-
