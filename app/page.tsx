@@ -535,10 +535,10 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     
 
 
-          <div className="flex items-center space-x-2 mt-4">
+          <div className=" mt-4 flex items-center border border-gray-300 dark:border-gray-700 rounded-md w-fit">
             <button
               onClick={() => setDivision((prev) => Math.max(1, prev - 1))}
-              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-dark-text rounded-md"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               −
             </button>
@@ -546,11 +546,11 @@ const isCustomSize = !availableSizes.includes(selectedSize);
               type="number"
               value={division}
               onChange={(e) => setDivision(Number.parseInt(e.target.value) || 1)}
-              className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-20 text-center rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+              className="w-16 text-center border-x border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
             <button
               onClick={() => setDivision((prev) => prev + 1)}
-              className="px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-dark-text rounded-md"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               +
             </button>
@@ -824,7 +824,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-md w-fit">
             <button
               onClick={() => setUps((prev) => Math.max(1, prev - 1))}
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               -
             </button>
@@ -836,7 +836,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
             />
             <button
               onClick={() => setUps((prev) => prev + 1)}
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-r-md text-gray-700 dark:text-dark-text"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-r-md text-gray-700 dark:text-dark-text"
             >
               +
             </button>
@@ -868,7 +868,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
 
             <button
               onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               -
             </button>
@@ -877,12 +877,12 @@ const isCustomSize = !availableSizes.includes(selectedSize);
               type="number"
               value={percentage}
               onChange={(e) => setPercentage(Number(e.target.value))}
-              className="border border-gray-300 dark:border-gray-700 p-2 rounded-md w-20 text-center bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+              className="w-16 text-center border-x border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
             />
 
             <button
               onClick={() => setPercentage((prev) => prev + 1)}
-              className="px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
             >
               +
             </button>
