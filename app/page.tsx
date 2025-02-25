@@ -375,6 +375,8 @@ const isCustomSize = !availableSizes.includes(selectedSize);
   // Prevent rendering until the theme is loaded
   if (darkMode === null) return null;
 
+
+
   //---------------------------------------------------------------------------------------------------------------------------------------------///
 
 
@@ -421,7 +423,25 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           )}
         </AnimatePresence>
       </motion.button>
-      
+      <div className="flex flex-col items-center justify-center text-center">
+  <motion.img
+    initial={{ y: -20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ delay: 0.2, duration: 0.5 }}
+    src="/Logo1.png"
+    alt="Company Logo"
+    className="h-20 block dark:hidden"
+  />
+  <motion.img
+    initial={{ y: -20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ delay: 0.2, duration: 0.5 }}
+    src="/Logo2.png"
+    alt="Company Logo Dark Mode"
+    className="h-20 hidden dark:block"
+  />
+</div>
+
       <motion.h1
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
