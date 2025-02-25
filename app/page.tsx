@@ -863,31 +863,31 @@ const isCustomSize = !availableSizes.includes(selectedSize);
             Transport Cost: ₹{transportCost}/-
           </h3>
           <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Final Cost Calculation</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Final Cost Calculation %</h2>
 
-            <label className="block text-gray-700 dark:text-dark-text"></label>
+              <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-md w-fit">
+                <button
+                  onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
+                  className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
+                >
+                  -
+                </button>
 
-            <button
-              onClick={() => setPercentage((prev) => Math.max(prev - 1, 0))} // Prevents going below 0
-              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
-            >
-              -
-            </button>
+                <input
+                  type="number"
+                  value={percentage}
+                  onChange={(e) => setPercentage(Number(e.target.value))}
+                  className="w-16 text-center border border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+                />
 
-            <input
-              type="number"
-              value={percentage}
-              onChange={(e) => setPercentage(Number(e.target.value))}
-              className="w-16 text-center border-x border-gray-300 dark:border-gray-700 p-2 md:p-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
-            />
-
-            <button
-              onClick={() => setPercentage((prev) => prev + 1)}
-              className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-l-md text-gray-700 dark:text-dark-text"
-            >
-              +
-            </button>
-          </div>
+                <button
+                  onClick={() => setPercentage((prev) => prev + 1)}
+                  className="px-3 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-r-md text-gray-700 dark:text-dark-text"
+                >
+                  +
+                </button>
+              </div>
+            </div>
         </div>
       </div>
 
