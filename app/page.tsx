@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Moon, Sun } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+
 
 type MachinePricing = {
   basePrice: number
@@ -25,6 +27,7 @@ export default function Home() {
   const [wastage, setWastage] = useState(200)
   const [price, setPrice] = useState(0)
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
+ 
 
   // ✅ Board Pricing Data
   const boardPrices = {
@@ -75,10 +78,10 @@ export default function Home() {
     },
     cyberXL: {
       sizes: {
-        "31.5x41.5": { "350GSM": 25.68, "300GSM": 22.01 },
-        "25x41.5": { "350GSM": 20.38, "300GSM": 17.47 },
-        "25x36": { "350GSM": 17.68, "300GSM": 15.15 },
-        "23x36": { "350GSM": 16.27, "300GSM": 13.94 },
+        "31.5x41.5": { "350GSM": 25.38, "400GSM": 29.00 },
+        "25x41.5": { "350GSM": 20.15, "400GSM": 23.02 },
+        "25x36": { "350GSM": 17.48, "400GSM": 19.97 },
+        "23x36": { "350GSM": 16.02, "400GSM": 18.38 },
       },
     },
     whiteBack: {
@@ -129,10 +132,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
   // Die Cost
   const [dieCost, setDieCost] = useState(500)
 
-  // Punching Cost
-  const [punchingType, setPunchingType] = useState("Paper Board")
-  const [punchingCostPerThousand, setPunchingCostPerThousand] = useState(500)
-  const [punchingCost, setPunchingCost] = useState(0)
+  
 
   // Cutting Cost
   const [cuttingType, setCuttingType] = useState("Metpet")
@@ -212,16 +212,34 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     setBoardCost(totalBoardCost);
   }, [selectedBoard, selectedSize, selectedGSM, quantity, division, wastage, customPrice]);
   
+  const [punchingType, setPunchingType] = useState("Paper Board");
+  const [punchingCost, setPunchingCost] = useState(500);
+  
+  useEffect(() => {
+    const calculatePunchingCost = (quantity: number) => {
+      let cost = 500; // Base cost for up to 1100 sheets
+  
+      if (quantity > 1100) cost = 750; // 1101 - 1500 sheets
+      if (quantity > 1500) cost = 1000; // 1501 - 2100 sheets
+      if (quantity > 2100) cost += Math.ceil((quantity - 2100) / 600) * 250; // ₹250 per extra 600 sheets
+  
+      return cost;
+    };
+  
+    const totalQuantity = quantity; // Include wastage in calculation
+    const baseCost = calculatePunchingCost(totalQuantity);
+  
+    // Apply different rates for Paper Board & E-Flute
+    const finalCost = punchingType === "Paper Board" ? baseCost : baseCost * 1;
+  
+    setPunchingCost(finalCost);
+  }, [quantity, punchingType, wastage]);
+  
+  
   
 
-  useEffect(() => {
-    setPunchingCost(((quantity) / 1000) * punchingCostPerThousand)
-  }, [quantity, punchingCostPerThousand, wastage]) // Added wastage as a dependency
 
-  useEffect(() => {
-    const rate = punchingType === "Paper Board" ? 500 : 1000
-    setPunchingCost(((quantity) / 1000) * rate)
-  }, [quantity, punchingType, wastage]) // Added wastage as a dependency
+
 
   useEffect(() => {
     let cost = 0
@@ -233,9 +251,9 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     setCuttingCost(cost)
   }, [quantity, cuttingType])
 
-  useEffect(() => {
-    setPunchingCostPerThousand(punchingType === "Paper Board" ? 500 : 1000)
-  }, [punchingType])
+  
+ 
+  
 
   useEffect(() => {
     fetch("https://quotation-backend-beta.vercel.app/api/get-pricing")
@@ -365,23 +383,56 @@ const isCustomSize = !availableSizes.includes(selectedSize);
 
   
   return (
+    
+      
     <div className="p-4 md:p-6 bg-white dark:bg-dark-bg text-gray-800 dark:text-dark-text min-h-screen">
-      <button
+      <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setDarkMode(!darkMode)}
-        className="fixed top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-dark-surface"
+        className="fixed top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-800 transition-colors duration-300"
       >
-        {darkMode ? (
-          <Sun className="h-6 w-6 text-yellow-500" />
-        ) : (
-          <Moon className="h-6 w-6 text-gray-800 dark:text-dark-text" />
-        )}
-      </button>
-      <h1 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
+        <AnimatePresence mode="wait" initial={false}>
+          {darkMode ? (
+            <motion.div
+              key="sun"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Sun className="h-6 w-6 text-yellow-500" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="moon"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Moon className="h-6 w-6 text-gray-800 dark:text-gray-200" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+      
+      <motion.h1
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="text-3xl md:text-5xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-gray-100"
+      >
         Offset Quotation Maker
-      </h1>
+      </motion.h1>
 
       <div className="flex flex-col md:flex-row gap-6 md:items-stretch">
-        <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+        <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-lg rounded-lg p-4 md:p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Board Selection</h2>
 
           <label className="block text-gray-700 dark:text-dark-text">Board Type:</label>
@@ -461,6 +512,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
         />
       </div>
     )}
+    
 
 
           <div className="flex items-center space-x-2 mt-4">
@@ -671,7 +723,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
                     )}
                   </div>
                   <span className="ml-2 text-gray-800 dark:text-gray-300">
-                    Paper Board (₹500 per 1000)
+                    Paper Board 
                   </span>
                 </label>
                 
@@ -689,7 +741,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
                     )}
                   </div>
                   <span className="ml-2 text-gray-800 dark:text-gray-300">
-                    E-Flute (₹1000 per 1000)
+                    E-Flute 
                   </span>
                 </label>
 
@@ -698,8 +750,9 @@ const isCustomSize = !availableSizes.includes(selectedSize);
             
 
             <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
-              Punching Cost: ₹{punchingCost.toFixed(2)}/-
-            </h3>
+  Punching Cost: ₹{punchingCost.toLocaleString("en-IN")}/-
+</h3>
+
           </div>
         </div>
       </div>
@@ -825,8 +878,11 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       <h3 className="text-3xl md:text-6xl font-bold text-center py-6 md:py-12 text-gray-900 dark:text-dark-text">
         Final Cost: {finalCost}/-
       </h3>
+      </motion.div>
     </div>
+    
   )
+  
 }
 
 
