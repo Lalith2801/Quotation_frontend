@@ -226,7 +226,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       return cost;
     };
   
-    const totalQuantity = quantity; // Include wastage in calculation
+    const totalQuantity = quantity + wastage; // Include wastage in calculation
     const baseCost = calculatePunchingCost(totalQuantity);
   
     // Apply different rates for Paper Board & E-Flute
