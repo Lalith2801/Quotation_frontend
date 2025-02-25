@@ -450,9 +450,10 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       >
         Offset Quotation Maker
       </motion.h1>
+      
 
       <div className="flex flex-col md:flex-row gap-6 md:items-stretch">
-        <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-lg rounded-lg p-4 md:p-6">
+        <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-lg rounded-2xl p-4 md:p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Board Selection</h2>
 
           <label className="block text-gray-700 dark:text-dark-text">Board Type:</label>
@@ -569,7 +570,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           </h3>
         </div>
 
-        <div className="w-full md:w-3/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6 mt-6 md:mt-0">
+        <div className="w-full md:w-3/5 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6 mt-6 md:mt-0">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Printing Cost Calculation</h2>
 
           <fieldset>
@@ -648,7 +649,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       <hr className="my-6" /> */}
 
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
-        <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+        <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Coating & Lamination</h2>
 
           <fieldset>
@@ -709,7 +710,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
         </div>
 
         <div className="w-full lg:w-3/5 flex flex-col sm:flex-row gap-6">
-          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Die Cost</h2>
 
             <label className="block text-gray-700 dark:text-dark-text">Die Cost (Default: ₹500):</label>
@@ -723,7 +724,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
             <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">Die Cost: ₹{dieCost}/-</h3>
           </div>
 
-          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+          <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Punching</h2>
 
             <fieldset>
@@ -780,7 +781,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       {/* <hr className="my-6" /> */}
 
       <div className="flex flex-col sm:flex-row gap-6 mt-6">
-        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Pasting</h2>
 
           <fieldset>
@@ -847,7 +848,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           </h3>
         </div>
 
-        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
+        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Transport</h2>
 
           <label className="block text-gray-700 dark:text-dark-text">Enter Transport Cost:</label>
