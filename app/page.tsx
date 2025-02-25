@@ -430,7 +430,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     transition={{ delay: 0.2, duration: 0.5 }}
     src="/Logo1.png"
     alt="Company Logo"
-    className="h-20 block dark:hidden"
+    className="h-12 md:h-20 block dark:hidden"
   />
   <motion.img
     initial={{ y: -20, opacity: 0 }}
@@ -438,7 +438,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     transition={{ delay: 0.2, duration: 0.5 }}
     src="/Logo2.png"
     alt="Company Logo Dark Mode"
-    className="h-20 hidden dark:block"
+    className="h-12 md:h-20 hidden dark:block"
   />
 </div>
 
