@@ -31,51 +31,51 @@ export default function Home() {
 
   // ✅ Board Pricing Data
   const boardPrices = {
-    artPaper: {
-      sizes: {
-        "20x30": {
-          "80GSM": 2.72,
-          "90GSM": 2.98,
-          "100GSM": 3.3,
-          "130GSM": 4.15,
-          "170GSM": 5.43,
-          "220GSM": 7.03,
-          "250GSM": 7.99,
-          "300GSM": 9.58,
-          "350GSM": 11.35,
-        },
-        "23x36": {
-          "80GSM": 3.73,
-          "90GSM": 4.1,
-          "100GSM": 4.57,
-          "130GSM": 5.73,
-          "170GSM": 7.49,
-          "220GSM": 9.7,
-          "250GSM": 11.0,
-          "300GSM": 13.22,
-          "350GSM": 15.65,
-        },
-        "25x36": {
-          "80GSM": 4.06,
-          "90GSM": 4.46,
-          "100GSM": 4.96,
-          "130GSM": 6.22,
-          "170GSM": 8.14,
-          "220GSM": 10.54,
-          "250GSM": 11.98,
-          "300GSM": 14.37,
-          "350GSM": 17.02,
-        },
-      },
-    },
-    maplithio: {
-      sizes: {
-        "20x30": { "60GSM": 1.9, "70GSM": 2.18, "80GSM": 2.48, "90GSM": 2.79, "100GSM": 3.1, "120GSM": 3.72 },
-        "23x36": { "60GSM": 2.63, "70GSM": 2.97, "80GSM": 3.42, "90GSM": 3.85, "100GSM": 4.37, "120GSM": 5.11 },
-        "25x36": { "60GSM": 3.25, "70GSM": 3.72, "80GSM": 4.18, "90GSM": 4.65, "100GSM": 5.57 },
-        "17x27": { "60GSM": 1.66, "70GSM": 1.9, "80GSM": 2.13, "90GSM": 2.37, "100GSM": 2.84 },
-      },
-    },
+    // artPaper: {
+    //   sizes: {
+    //     "20x30": {
+    //       "80GSM": 2.72,
+    //       "90GSM": 2.98,
+    //       "100GSM": 3.3,
+    //       "130GSM": 4.15,
+    //       "170GSM": 5.43,
+    //       "220GSM": 7.03,
+    //       "250GSM": 7.99,
+    //       "300GSM": 9.58,
+    //       "350GSM": 11.35,
+    //     },
+    //     "23x36": {
+    //       "80GSM": 3.73,
+    //       "90GSM": 4.1,
+    //       "100GSM": 4.57,
+    //       "130GSM": 5.73,
+    //       "170GSM": 7.49,
+    //       "220GSM": 9.7,
+    //       "250GSM": 11.0,
+    //       "300GSM": 13.22,
+    //       "350GSM": 15.65,
+    //     },
+    //     "25x36": {
+    //       "80GSM": 4.06,
+    //       "90GSM": 4.46,
+    //       "100GSM": 4.96,
+    //       "130GSM": 6.22,
+    //       "170GSM": 8.14,
+    //       "220GSM": 10.54,
+    //       "250GSM": 11.98,
+    //       "300GSM": 14.37,
+    //       "350GSM": 17.02,
+    //     },
+    //   },
+    // },
+    // maplithio: {
+    //   sizes: {
+    //     "20x30": { "60GSM": 1.9, "70GSM": 2.18, "80GSM": 2.48, "90GSM": 2.79, "100GSM": 3.1, "120GSM": 3.72 },
+    //     "23x36": { "60GSM": 2.63, "70GSM": 2.97, "80GSM": 3.42, "90GSM": 3.85, "100GSM": 4.37, "120GSM": 5.11 },
+    //     "25x36": { "60GSM": 3.25, "70GSM": 3.72, "80GSM": 4.18, "90GSM": 4.65, "100GSM": 5.57 },
+    //     "17x27": { "60GSM": 1.66, "70GSM": 1.9, "80GSM": 2.13, "90GSM": 2.37, "100GSM": 2.84 },
+    //   },
+    // },
     cyberXL: {
       sizes: {
         "31.5x41.5": { "300GSM": 22.01, "350GSM": 25.38, "400GSM": 29.00 },
@@ -100,14 +100,14 @@ export default function Home() {
         "23x36": { "230GSM": 7.02, "250GSM": 7.62, "300GSM": 8.65 },
       },
     },
-    stickerPaper: {
-      sizes: {
-        "20x30": { StayOn: 12.0, StickOn: 11.5 },
-        "18x25": { StayOn: 8.5, StickOn: 9.5 },
-        "18x23": { StayOn: 8.15, StickOn: 9.0 },
-        "23x36": { StayOn: 17.5, StickOn: 11.0 },
-      },
-    },
+    // stickerPaper: {
+    //   sizes: {
+    //     "20x30": { StayOn: 12.0, StickOn: 11.5 },
+    //     "18x25": { StayOn: 8.5, StickOn: 9.5 },
+    //     "18x23": { StayOn: 8.15, StickOn: 9.0 },
+    //     "23x36": { StayOn: 17.5, StickOn: 11.0 },
+    //   },
+    // },
   }
 
   // Board Cost Calculation
@@ -115,7 +115,7 @@ export default function Home() {
   const [selectedGSM, setSelectedGSM] = useState("350")
   const [boardCost, setBoardCost] = useState(0)
   const [division, setDivision] = useState(1)
-  const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("artPaper")
+  const [selectedBoard, setSelectedBoard] = useState<keyof typeof boardPrices>("cyberXL")
   const [customSize, setCustomSize] = useState("");
 const [customPrice, setCustomPrice] = useState("");
 
@@ -125,8 +125,8 @@ const isCustomSize = !availableSizes.includes(selectedSize);
 
   // Coating Calculation
   const [coatingType, setCoatingType] = useState("Gloss")
-  const [coatingHeight, setCoatingHeight] = useState(0)
-  const [coatingWidth, setCoatingWidth] = useState(0)
+   const [coatingHeight, setCoatingHeight] = useState<number | null>(null);
+const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
   const [coatingPrice, setCoatingPrice] = useState(0)
 
   // Die Cost
@@ -139,7 +139,8 @@ const isCustomSize = !availableSizes.includes(selectedSize);
   const [cuttingCost, setCuttingCost] = useState(0)
 
   // Transport Cost
-  const [transportCost, setTransportCost] = useState(2000)
+  const [transportCost, setTransportCost] = useState<number>(0);
+
 
   // Pasting Cost
   const [pastingType, setPastingType] = useState("Bottom Lock")
@@ -219,9 +220,9 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     const calculatePunchingCost = (quantity: number) => {
       let cost = 500; // Base cost for up to 1100 sheets
   
-      if (quantity > 1100) cost = 750; // 1101 - 1500 sheets
+      if (quantity > 1200) cost = 750; // 1101 - 1500 sheets
       if (quantity > 1500) cost = 1000; // 1501 - 2100 sheets
-      if (quantity > 2100) cost += Math.ceil((quantity - 2100) / 600) * 250; // ₹250 per extra 600 sheets
+      if (quantity > 2000) cost += Math.ceil((quantity - 2000) / 500) * 250; // ₹250 per extra 600 sheets
   
       return cost;
     };
@@ -266,21 +267,22 @@ const isCustomSize = !availableSizes.includes(selectedSize);
       })
   }, [selectedMachine]) // Added selectedMachine as a dependency
 
-  useEffect(() => {
-    if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
-      const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
+  // useEffect(() => {
+  //   if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
+  //     const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
 
-      let finalPrice
-      if (quantity <= 3000) {
-        finalPrice = basePrice
-      } else {
-        const extraUnits = Math.ceil((quantity - 3000) / 1000)
-        finalPrice = basePrice + extraUnits * extraPricePerThousand
-      }
+  //     let finalPrice
+  //     if (quantity <= 3000) {
+  //       finalPrice = basePrice
+  //     } else {
+  //       const extraUnits = Math.ceil((quantity - 3000) / 1000)
+  //       finalPrice = basePrice + extraUnits * extraPricePerThousand
+  //     }
 
-      setPrice(finalPrice)
-    }
-  }, [selectedMachine, selectedPrintType, quantity, machines])
+  //     setPrice(finalPrice)
+  //   }
+  // }, [selectedMachine, selectedPrintType, quantity, machines])
+
   const [metpetPrice, setMetpetPrice] = useState(0)
   const [baseCoatingCost, setBaseCoatingCost] = useState(0)
   const calculateCoatingCost = () => {
@@ -292,9 +294,10 @@ const isCustomSize = !availableSizes.includes(selectedSize);
     else if (coatingType === "3d") rate = 2.25;
 
     const totalQuantity = quantity + wastage;
-
+    const validHeight = Number(coatingHeight) || 0;
+    const validWidth = Number(coatingWidth) || 0;
     // Step 1: Multiply width, height, and rate
-    let costPerSheet = coatingHeight * coatingWidth * rate;
+    let costPerSheet = validHeight * validWidth * rate;
 
     // Step 2: Divide by 100
     costPerSheet /= 100;
@@ -309,7 +312,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
 
     // If 3D is selected, calculate Metpet price separately
     if (coatingType === "3d") {
-        let metpetCostPerSheet = (coatingHeight * coatingWidth * 0.8) / 100;
+      let metpetCostPerSheet = (validHeight * validWidth * 0.8) / 100;
         metpetCostPerSheet = Math.floor(metpetCostPerSheet * 100) / 100; // Ensures only two decimal places
         const metpetCost = metpetCostPerSheet * totalQuantity;
 
@@ -322,6 +325,7 @@ const isCustomSize = !availableSizes.includes(selectedSize);
         setBaseCoatingCost(0);
     }
 };
+
 
 
   useEffect(() => {
@@ -648,66 +652,72 @@ const isCustomSize = !availableSizes.includes(selectedSize);
 {/* 
       <hr className="my-6" /> */}
 
-      <div className="flex flex-col lg:flex-row gap-6 mt-6">
-        <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Coating & Lamination</h2>
+<div className="flex flex-col lg:flex-row gap-6 mt-6">
+  <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
+    <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">
+      Coating & Lamination
+    </h2>
 
-          <fieldset>
-            <legend className="block text-gray-700 dark:text-dark-text">Type:</legend>
-            <div className="grid grid-cols-2 gap-2">
-              {["Gloss", "Matt", "Texture UV", "Metpet", "3d"].map((type) => (
-                <label key={type} className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    value={type}
-                    checked={coatingType === type}
-                    onChange={(e) => setCoatingType(e.target.value)}
-                    className="peer hidden"
-                    />
-                    <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center">
-                      {coatingType === type && (
-                        <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white "></div>
-                      )}
-                    </div>
-                    <span className="ml-2 text-gray-800 dark:text-gray-300">{type}</span>
-                  </label>
-                  ))}
+    {/* Coating Type Selection */}
+    <fieldset>
+      <legend className="block text-gray-700 dark:text-dark-text">Type:</legend>
+      <div className="grid grid-cols-2 gap-2">
+        {["Gloss", "Matt", "Texture UV", "Metpet", "3d"].map((type) => (
+          <label key={type} className="inline-flex items-center">
+            <input
+              type="radio"
+              value={type}
+              checked={coatingType === type}
+              onChange={(e) => {
+                setCoatingType(e.target.value);
+              }}
+              className="peer hidden"
+            />
+            <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center">
+              {coatingType === type && (
+                <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+              )}
             </div>
-          </fieldset>
+            <span className="ml-2 text-gray-800 dark:text-gray-300">{type}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
 
-          <label className="block text-gray-700 dark:text-dark-text mt-4">Height (in):</label>
-          <input
-            type="number"
-            onChange={(e) => setCoatingHeight(Number(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
-          />
+    {/* Height Input */}
+    <label className="block text-gray-700 dark:text-dark-text mt-4">Height (in):</label>
+    <input
+  type="number"
+  value={coatingHeight !== null ? coatingHeight : ""}
+  onChange={(e) => setCoatingHeight(e.target.value ? Number(e.target.value) : null)}
+  className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+/>
 
-          <label className="block text-gray-700 dark:text-dark-text mt-4">Width (in):</label>
-          <input
-            type="number"
-            onChange={(e) => setCoatingWidth(Number(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
-          />
-          <button
-            onClick={calculateCoatingCost}
-            className="bg-black dark:bg-gray text-white p-2 w-full mt-4 rounded"
-          >
-            Calculate Coating Cost
-          </button>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
-            Coating Cost: ₹{coatingPrice.toFixed(2)}/-
-          </h3>
-          {coatingType === "3d" && (
-            <>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
-                Metpet Cost: ₹{metpetPrice.toFixed(2)}/-
-              </h3>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
-                Base Coating Cost: ₹{baseCoatingCost.toFixed(2)}/-
-              </h3>
-            </>
-          )}
-        </div>
+    {/* Width Input */}
+    <label className="block text-gray-700 dark:text-dark-text mt-4">Width (in):</label>
+    <input
+  type="number"
+  value={coatingWidth !== null ? coatingWidth : ""}
+  onChange={(e) => setCoatingWidth(e.target.value ? Number(e.target.value) : null)}
+  className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+/>
+
+    {/* Coating Cost */}
+    <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
+      Coating Cost: ₹{coatingPrice.toFixed(2)}/-
+    </h3>
+
+    {coatingType === "3d" && (
+      <>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
+          Texture UV Cost: ₹{metpetPrice.toFixed(2)}/-
+        </h3>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-2">
+          Base Coating Cost: ₹{baseCoatingCost.toFixed(2)}/-
+        </h3>
+      </>
+    )}
+  </div>
 
         <div className="w-full lg:w-3/5 flex flex-col sm:flex-row gap-6">
           <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
@@ -848,20 +858,45 @@ const isCustomSize = !availableSizes.includes(selectedSize);
           </h3>
         </div>
 
-        <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Transport</h2>
+        <div className="w-full lg:w-2/5 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
+  <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Transport Cost</h2>
 
-          <label className="block text-gray-700 dark:text-dark-text">Enter Transport Cost:</label>
+  <fieldset>
+    <legend className="block text-gray-700 dark:text-dark-text mb-2">Select Cost:</legend>
+    <div className="grid grid-cols-2 gap-2">
+      {[250, 450, 550, 650, 1000].map((cost) => (
+        <label key={cost} className="flex items-center space-x-2 cursor-pointer">
           <input
-            type="number"
-            value={transportCost}
-            onChange={(e) => setTransportCost(Number.parseInt(e.target.value))}
-            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+            type="radio"
+            value={cost}
+            checked={transportCost === cost}
+            onChange={(e) => setTransportCost(Number(e.target.value))}
+            className="peer hidden"
           />
+          <div className="h-5 w-5 rounded-full border-2 border-gray-400 dark:border-white peer-checked:border-black dark:peer-checked:border-white flex items-center justify-center">
+            {transportCost === cost && (
+              <div className="h-2.5 w-2.5 rounded-full bg-black dark:bg-white"></div>
+            )}
+          </div>
+          <span className="text-gray-800 dark:text-gray-300">₹{cost}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
 
-          <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
-            Transport Cost: ₹{transportCost}/-
-          </h3>
+  {/* Custom Input Field */}
+  <label className="block text-gray-700 dark:text-dark-text mt-4">Custom Transport Cost:</label>
+  <input
+  type="number"
+  value={transportCost === 0 ? "" : transportCost} // Show empty box when 0
+  onChange={(e) => setTransportCost(e.target.value ? Number(e.target.value) : 0)}
+  className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+/>
+
+
+  <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
+    Selected Transport Cost: ₹{transportCost ? transportCost : "0"}/-
+  </h3>
           <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-lg p-4 md:p-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Final Cost Calculation %</h2>
 
