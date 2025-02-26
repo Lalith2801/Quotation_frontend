@@ -166,20 +166,27 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
   
 
   useEffect(() => {
-    if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
-      const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
-
-      let finalPrice
-      if (quantity <= 3000) {
-        finalPrice = basePrice
-      } else {
-        const extraUnits = Math.ceil((quantity - 3000) / 1000)
-        finalPrice = basePrice + extraUnits * extraPricePerThousand
+    if (
+      machines.pricingData[selectedMachine] &&
+      machines.pricingData[selectedMachine][selectedPrintType]
+    ) {
+      const { basePrice, extraPricePerThousand } =
+        machines.pricingData[selectedMachine][selectedPrintType];
+  
+      // Adjust quantity by adding wastage
+      const totalQuantity = quantity + wastage;
+  
+      let finalPrice = basePrice;
+  
+      // If totalQuantity > 3000, calculate extra price
+      if (totalQuantity > 3000) {
+        const extraUnits = Math.ceil((totalQuantity - 3000) / 1000);
+        finalPrice += extraUnits * extraPricePerThousand;
       }
-
-      setPrice(finalPrice)
+  
+      setPrice(finalPrice);
     }
-  }, [selectedMachine, selectedPrintType, quantity, machines])
+  }, [selectedMachine, selectedPrintType, quantity, wastage, machines]);
 
   useEffect(() => {
     if (!selectedBoard || !selectedSize || !selectedGSM || !division) return;
