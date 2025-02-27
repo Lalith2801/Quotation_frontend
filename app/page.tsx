@@ -130,7 +130,7 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
   const [coatingPrice, setCoatingPrice] = useState(0)
 
   // Die Cost
-  const [dieCost, setDieCost] = useState(500)
+  const [dieCost, setDieCost] = useState(0)
 
   
 
