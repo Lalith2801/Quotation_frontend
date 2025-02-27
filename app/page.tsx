@@ -23,7 +23,9 @@ export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
   const [selectedMachine, setSelectedMachine] = useState("")
   const [selectedPrintType, setSelectedPrintType] = useState("")
-  const [quantity, setQuantity] = useState(1000)
+  const [moq, setMoq] = useState(1000);
+  const [ups, setUps] = useState(1)
+  const [quantity, setQuantity] = useState(moq / ups);
   const [wastage, setWastage] = useState(200)
   const [price, setPrice] = useState(0)
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
@@ -144,7 +146,7 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
 
   // Pasting Cost
   const [pastingType, setPastingType] = useState("Bottom Lock")
-  const [ups, setUps] = useState(1)
+  
   const [pastingCost, setPastingCost] = useState(0)
   const API_URL = process.env.NEXT_PUBLIC_API_URL
   useEffect(() => {
@@ -163,7 +165,14 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
       .catch((error) => console.error("Error fetching pricing data:", error))
   }, [])
 
-  
+
+
+
+useEffect(() => {
+  if (moq && ups) {
+    setQuantity(Math.ceil(moq / ups)); // Ensure a whole number for quantity
+  }
+}, [moq, ups]); // Runs whenever MOQ or UPS changes
 
   useEffect(() => {
     if (
@@ -346,8 +355,11 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
     if (pastingType === "Bottom Lock") rate = 0.45
     else if (pastingType === "Side Pasting") rate = 0.25
 
+    const validQuantity = Number(quantity) || 0; // Ensure numeric values
+    const validUps = Number(ups) || 1; // Avoid division by zero
+
     setPastingCost(ups * (quantity) * rate)
-  }, [ups, quantity, wastage, pastingType])
+  }, [ups, quantity, pastingType])
   const [totalCost, setTotalCost] = useState(0)
   const [percentage, setPercentage] = useState(12) // Default 16%
 
@@ -390,7 +402,6 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
 
   // Prevent rendering until the theme is loaded
   if (darkMode === null) return null;
-
 
 
   //---------------------------------------------------------------------------------------------------------------------------------------------///
@@ -471,7 +482,13 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
       <div className="flex flex-col md:flex-row gap-6 md:items-stretch">
         <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-lg rounded-2xl p-4 md:p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Board Selection</h2>
-
+          <label className="block text-gray-700 dark:text-dark-text mt-4">MOQ:</label>
+<input
+  type="number"
+  value={moq}
+  onChange={(e) => setMoq(Number(e.target.value) || 1)}
+  className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+/>
           <label className="block text-gray-700 dark:text-dark-text">Board Type:</label>
           <select
             value={selectedBoard}
@@ -947,6 +964,7 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
         Final Cost: {finalCost}/-
       </h3>
       </motion.div>
+     
     </div>
     
   )
