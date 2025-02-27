@@ -274,6 +274,11 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
       })
   }, [selectedMachine]) // Added selectedMachine as a dependency
 
+  useEffect(() => {
+    calculateCoatingCost();
+  }, [coatingType, coatingHeight, coatingWidth, quantity]); // Runs whenever any of these change
+
+
   // useEffect(() => {
   //   if (machines.pricingData[selectedMachine] && machines.pricingData[selectedMachine][selectedPrintType]) {
   //     const { basePrice, extraPricePerThousand } = machines.pricingData[selectedMachine][selectedPrintType]
@@ -344,7 +349,7 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
     setPastingCost(ups * (quantity) * rate)
   }, [ups, quantity, wastage, pastingType])
   const [totalCost, setTotalCost] = useState(0)
-  const [percentage, setPercentage] = useState(16) // Default 16%
+  const [percentage, setPercentage] = useState(12) // Default 16%
 
   useEffect(() => {
     setTotalCost(
