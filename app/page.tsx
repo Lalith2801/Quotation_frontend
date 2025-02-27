@@ -407,8 +407,17 @@ useEffect(() => {
   //---------------------------------------------------------------------------------------------------------------------------------------------///
 
 
-
-
+  const moqValues = [5000, 7500, 10000, 12500, 15000, 20000];
+  const transportCosts = {
+    5000: 250,
+    7500: 450,
+    10000: 550,
+    12500: 650,
+    15000: 750,
+    20000: 1000
+  } as const; // Tells TypeScript these are fixed numbers
+  
+  const transportCostForMOQ = transportCosts[moq as keyof typeof transportCosts] || 0; // Type-safe indexing
 
   
   return (
@@ -964,7 +973,60 @@ useEffect(() => {
         Final Cost: {finalCost}/-
       </h3>
       </motion.div>
-     
+      <h2 className="text-lg font-bold text-gray-900 dark:text-dark-text">MOQ Table</h2>
+    <table className="w-full border border-gray-300 dark:border-gray-700 mt-2">
+      <thead>
+        <tr className="bg-gray-200 dark:bg-gray-700">
+          <th className="p-2 border">MOQ</th>
+          <th className="p-2 border">Quantity</th>
+          <th className="p-2 border">Transport Cost</th>
+          <th className="p-2 border">Final Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        {moqValues.map((moq) => {
+          const calculatedQuantity = Math.ceil(moq / ups); // Calculate quantity for each MOQ
+          const transportCostForMOQ = transportCosts[moq] || 0; // Assign transport cost
+
+          // Dynamically compute coating price based on input values
+          const validHeight = Number(coatingHeight) || 0;
+          const validWidth = Number(coatingWidth) || 0;
+          let rate = 0;
+          if (coatingType === "Gloss") rate = 0.38;
+          else if (coatingType === "Matt") rate = 0.45;
+          else if (coatingType === "Texture UV") rate = 0.8;
+          else if (coatingType === "Metpet") rate = 1.45;
+          else if (coatingType === "3d") rate = 2.25;
+
+          const costPerSheet = Math.floor((validHeight * validWidth * rate) / 100 * 100) / 100;
+          const coatingPriceForMOQ = costPerSheet * calculatedQuantity;
+
+          // Calculate the total cost for this MOQ
+          const totalCostForMOQ =
+            boardCost +
+            price +
+            coatingPriceForMOQ +
+            dieCost +
+            punchingCost +
+            pastingCost +
+            transportCostForMOQ +
+            baseCoatingCost +
+            metpetPrice;
+
+          // Calculate final cost per unit
+          const finalCostForMOQ = ((totalCostForMOQ / (calculatedQuantity * ups)) * (1 + percentage / 100)).toFixed(2);
+
+          return (
+            <tr key={moq} className="text-center">
+              <td className="p-2 border">{moq}</td>
+              <td className="p-2 border">{calculatedQuantity}</td>
+              <td className="p-2 border">₹{transportCostForMOQ}</td>
+              <td className="p-2 border">₹{finalCostForMOQ}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
     </div>
     
   )
