@@ -23,16 +23,18 @@ export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
   const [selectedMachine, setSelectedMachine] = useState("")
   const [selectedPrintType, setSelectedPrintType] = useState("")
-  const [moq, setMoq] = useState(1000);
+  const [moq, setMoq] = useState<number | "">("");
+
+
   const [ups, setUps] = useState(1)
-  const [quantity, setQuantity] = useState(moq / ups);
+  const [quantity, setQuantity] = useState<number>(0);
   const [wastage, setWastage] = useState(200)
   const [price, setPrice] = useState(0)
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
  
 
   // ✅ Board Pricing Data
-  const boardPrices = {
+  
     // artPaper: {
     //   sizes: {
     //     "20x30": {
@@ -78,6 +80,7 @@ export default function Home() {
     //     "17x27": { "60GSM": 1.66, "70GSM": 1.9, "80GSM": 2.13, "90GSM": 2.37, "100GSM": 2.84 },
     //   },
     // },
+    const boardPrices = {
     cyberXL: {
       sizes: {
         "31.5x41.5": { "300GSM": 22.01, "350GSM": 25.38, "400GSM": 29.00 },
@@ -168,11 +171,15 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
 
 
 
-useEffect(() => {
-  if (moq && ups) {
-    setQuantity(Math.ceil(moq / ups)); // Ensure a whole number for quantity
-  }
-}, [moq, ups]); // Runs whenever MOQ or UPS changes
+  useEffect(() => {
+    if (moq !== "" && ups) {
+      setQuantity(Math.ceil(Number(moq) / ups)); // Ensure valid number conversion
+    } else {
+      setQuantity(0); // Default to 0 if moq is empty
+    }
+  }, [moq, ups]);
+  
+  
 
   useEffect(() => {
     if (
@@ -181,20 +188,21 @@ useEffect(() => {
     ) {
       const { basePrice, extraPricePerThousand } =
         machines.pricingData[selectedMachine][selectedPrintType];
-  
-      // Adjust quantity by adding wastage
+    
+      // **Include Wastage in Calculation**
       const totalQuantity = quantity + wastage;
-  
+    
       let finalPrice = basePrice;
-  
-      // If totalQuantity > 3000, calculate extra price
+    
+      // **Apply Extra Cost Only Beyond 3000 Sheets**
       if (totalQuantity > 3000) {
         const extraUnits = Math.ceil((totalQuantity - 3000) / 1000);
         finalPrice += extraUnits * extraPricePerThousand;
       }
-  
+    
       setPrice(finalPrice);
     }
+    
   }, [selectedMachine, selectedPrintType, quantity, wastage, machines]);
 
   useEffect(() => {
@@ -407,15 +415,15 @@ useEffect(() => {
   //---------------------------------------------------------------------------------------------------------------------------------------------///
 
 
-  const moqValues = [5000, 7500, 10000, 12500, 15000, 20000];
-  const transportCosts = {
+  const moqValues = [3000,5000, 7500, 10000, 12500, 15000, 20000]; // Predefined MOQ values
+  const transportCosts: Record<number, number> = {
     5000: 250,
     7500: 450,
     10000: 550,
     12500: 650,
     15000: 750,
     20000: 1000
-  } as const; // Tells TypeScript these are fixed numbers
+  };
   
   const transportCostForMOQ = transportCosts[moq as keyof typeof transportCosts] || 0; // Type-safe indexing
 
@@ -492,12 +500,15 @@ useEffect(() => {
         <div className="w-full md:w-2/5 bg-white dark:bg-dark-surface shadow-lg rounded-2xl p-4 md:p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Board Selection</h2>
           <label className="block text-gray-700 dark:text-dark-text mt-4">MOQ:</label>
-<input
-  type="number"
-  value={moq}
-  onChange={(e) => setMoq(Number(e.target.value) || 1)}
-  className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
-/>
+          
+          <input
+            type="number"
+            value={moq !== "" ? moq : ""}
+            onChange={(e) => setMoq(e.target.value ? Number(e.target.value) : "")}
+            className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+          />
+
+
           <label className="block text-gray-700 dark:text-dark-text">Board Type:</label>
           <select
             value={selectedBoard}
@@ -976,57 +987,121 @@ useEffect(() => {
       <h2 className="text-lg font-bold text-gray-900 dark:text-dark-text">MOQ Table</h2>
     <table className="w-full border border-gray-300 dark:border-gray-700 mt-2">
       <thead>
-        <tr className="bg-gray-200 dark:bg-gray-700">
+        <tr className="bg-gray-200 dark:bg-gray-700 text-center">
           <th className="p-2 border">MOQ</th>
           <th className="p-2 border">Quantity</th>
+          <th className="p-2 border">Board Cost</th>
+          <th className="p-2 border">Printing Cost</th>
+          <th className="p-2 border">Coating Cost</th>
+          <th className="p-2 border">Punching Cost</th>
+          <th className="p-2 border">Pasting Cost</th>
           <th className="p-2 border">Transport Cost</th>
+          <th className="p-2 border">Total Cost</th>
           <th className="p-2 border">Final Cost</th>
         </tr>
       </thead>
       <tbody>
-        {moqValues.map((moq) => {
-          const calculatedQuantity = Math.ceil(moq / ups); // Calculate quantity for each MOQ
-          const transportCostForMOQ = transportCosts[moq] || 0; // Assign transport cost
+      {moqValues.map((moq) => {
+     const calculatedQuantity = Math.ceil(moq / ups);
+     const transportCostForMOQ = transportCosts[moq] || 0;
+ 
+     // ✅ Correct Board Cost Calculation
+     let boardPricePerSheet = 0;
+ 
+     if (selectedBoard in boardPrices) {
+       const board = boardPrices[selectedBoard as keyof typeof boardPrices];
+ 
+       if (selectedSize in board.sizes) {
+         const sizeData = board.sizes[selectedSize as keyof typeof board.sizes];
+ 
+         if (selectedGSM in sizeData) {
+           boardPricePerSheet = sizeData[selectedGSM as keyof typeof sizeData] ?? 0;
+         }
+       }
+     }
+ 
+     // ✅ Ensure the same logic is applied as in the main board cost calculation
+     const costPerDivision = boardPricePerSheet / division;
+     const boardCostForMOQ = costPerDivision * (calculatedQuantity + wastage);
+ 
+     // ✅ Ensure this matches the main board cost value
+     console.log(`MOQ: ${moq}, Calculated Board Cost: ${boardCostForMOQ}`);
 
-          // Dynamically compute coating price based on input values
-          const validHeight = Number(coatingHeight) || 0;
-          const validWidth = Number(coatingWidth) || 0;
-          let rate = 0;
-          if (coatingType === "Gloss") rate = 0.38;
-          else if (coatingType === "Matt") rate = 0.45;
-          else if (coatingType === "Texture UV") rate = 0.8;
-          else if (coatingType === "Metpet") rate = 1.45;
-          else if (coatingType === "3d") rate = 2.25;
+          // **Printing Cost Calculation**
+          const machineData = machines.pricingData[selectedMachine]?.[selectedPrintType] || {};
+          const basePrice = machineData.basePrice || 0;
+          const extraPricePerThousand = machineData.extraPricePerThousand || 0;
+            
+          let printingCostForMOQ = basePrice;
+          
+          // ✅ Ensure Wastage is Included
+          const totalQuantity = calculatedQuantity + wastage;
+          
+          // ✅ Fix: Apply Extra Cost for Every 1000 Sheets Beyond 3200
+          if (totalQuantity > 3200) {
+            const extraUnits = Math.ceil((totalQuantity - 3200) / 1000);
+            printingCostForMOQ += extraUnits * extraPricePerThousand;
+          }
+          // **Coating Cost Calculation**
+          // ✅ Corrected Coating Price Calculation
+const validHeight = Number(coatingHeight) || 0;
+const validWidth = Number(coatingWidth) || 0;
 
-          const costPerSheet = Math.floor((validHeight * validWidth * rate) / 100 * 100) / 100;
-          const coatingPriceForMOQ = costPerSheet * calculatedQuantity;
+let rate = 0;
+if (coatingType === "Gloss") rate = 0.38;
+else if (coatingType === "Matt") rate = 0.45;
+else if (coatingType === "Texture UV") rate = 0.8;
+else if (coatingType === "Metpet") rate = 1.45;
+else if (coatingType === "3d") rate = 2.25;
 
-          // Calculate the total cost for this MOQ
+// ✅ Ensure same calculation as main coating cost
+const costPerSheet = Math.floor((validHeight * validWidth * rate) / 100 * 100) / 100;
+const coatingCostForMOQ = costPerSheet * (calculatedQuantity + wastage);
+          // **Punching Cost Calculation**
+          let punchingCostForMOQ = 500;
+          if (calculatedQuantity > 1100) punchingCostForMOQ = 750;
+          if (calculatedQuantity > 1500) punchingCostForMOQ = 1000;
+          if (calculatedQuantity > 2000) punchingCostForMOQ += Math.ceil((calculatedQuantity - 2000) / 500) * 250;
+
+          // **Pasting Cost Calculation**
+          let pastingRate = 0;
+          if (pastingType === "Bottom Lock") pastingRate = 0.45;
+          else if (pastingType === "Side Pasting") pastingRate = 0.25;
+          const pastingCostForMOQ = calculatedQuantity * ups * pastingRate;
+
+          // **Total Cost Calculation**
           const totalCostForMOQ =
-            boardCost +
-            price +
-            coatingPriceForMOQ +
+            boardCostForMOQ +
+            printingCostForMOQ +
+            coatingCostForMOQ +
             dieCost +
-            punchingCost +
-            pastingCost +
+            punchingCostForMOQ +
+            pastingCostForMOQ +
             transportCostForMOQ +
             baseCoatingCost +
             metpetPrice;
 
-          // Calculate final cost per unit
+          // **Final Cost per Unit**
           const finalCostForMOQ = ((totalCostForMOQ / (calculatedQuantity * ups)) * (1 + percentage / 100)).toFixed(2);
 
           return (
             <tr key={moq} className="text-center">
               <td className="p-2 border">{moq}</td>
               <td className="p-2 border">{calculatedQuantity}</td>
-              <td className="p-2 border">₹{transportCostForMOQ}</td>
+              <td className="p-2 border">₹{boardCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{printingCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{coatingCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{punchingCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{pastingCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{transportCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{totalCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{finalCostForMOQ}</td>
             </tr>
           );
         })}
       </tbody>
     </table>
+    
     </div>
     
   )
