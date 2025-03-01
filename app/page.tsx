@@ -417,6 +417,7 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
 
   const moqValues = [3000,5000, 7500, 10000, 12500, 15000, 20000]; // Predefined MOQ values
   const transportCosts: Record<number, number> = {
+    3000: 250,
     5000: 250,
     7500: 450,
     10000: 550,
