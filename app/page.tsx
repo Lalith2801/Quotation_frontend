@@ -23,7 +23,7 @@ export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
   const [selectedMachine, setSelectedMachine] = useState("")
   const [selectedPrintType, setSelectedPrintType] = useState("")
-  const [moq, setMoq] = useState<number | "">("");
+  const [moq, setMoq] = useState(3000);
 
 
   const [ups, setUps] = useState(1)
@@ -81,12 +81,12 @@ export default function Home() {
     //   },
     // },
     const boardPrices = {
-    cyberXL: {
-      sizes: {
-        "31.5x41.5": { "300GSM": 22.01, "350GSM": 25.38, "400GSM": 29.00 },
-        "25x41.5": { "300GSM": 17.47, "350GSM": 20.15, "400GSM": 23.02 },
-        "25x36": { "300GSM": 15.15, "350GSM": 17.48, "400GSM": 19.97 },
-        "23x36": { "300GSM": 13.94, "350GSM": 16.02, "400GSM": 18.38 },
+      cyberXL: {
+        sizes: {
+          "31.5x41.5": { "300GSM": 21.75, "350GSM": 25.38, "400GSM": 29.00 },
+          "25x41.5": { "300GSM": 17.27, "350GSM": 20.15, "400GSM": 23.02 },
+          "25x36": { "300GSM": 14.99, "350GSM": 17.48, "400GSM": 19.97 },
+          "23x36": { "300GSM": 13.79, "350GSM": 16.08, "400GSM": 18.38 },
       },
     },
     whiteBack: {
@@ -195,8 +195,8 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
       let finalPrice = basePrice;
     
       // **Apply Extra Cost Only Beyond 3000 Sheets**
-      if (totalQuantity > 3000) {
-        const extraUnits = Math.ceil((totalQuantity - 3000) / 1000);
+      if (totalQuantity > 3200) {
+        const extraUnits = Math.ceil((totalQuantity - 3200) / 1000);
         finalPrice += extraUnits * extraPricePerThousand;
       }
     
@@ -252,11 +252,12 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
     };
   
     const totalQuantity = quantity + wastage; // Include wastage in calculation
-    const baseCost = calculatePunchingCost(totalQuantity);
+    let finalCost = calculatePunchingCost(totalQuantity);
   
     // Apply different rates for Paper Board & E-Flute
-    const finalCost = punchingType === "Paper Board" ? baseCost : baseCost * 1;
-  
+    if (punchingType === "E-Flute") {
+      finalCost = totalQuantity * 1; // ₹1 per sheet for E-Flute
+    }
     setPunchingCost(finalCost);
   }, [quantity, punchingType, wastage]);
   
@@ -356,6 +357,31 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
 };
 
 
+const [eFluteHeight, setEFluteHeight] = useState<number | null>(null);
+const [eFluteWidth, setEFluteWidth] = useState<number | null>(null);
+const [eFluteCost, setEFluteCost] = useState(0);
+
+const calculateEFluteCost = () => {
+  const validHeight = Number(eFluteHeight) || 0;
+  const validWidth = Number(eFluteWidth) || 0;
+  const totalQuantity = quantity + wastage;
+
+  // Convert Height & Width from inches to cm
+  const heightInCM = validHeight * 2.54;
+  const widthInCM = validWidth * 2.54;
+
+  // Apply E-Flute formula: h * w * 0.0024
+  const eFluteCostPerSheet = heightInCM * widthInCM * 0.0024;
+  const totalEFluteCost = eFluteCostPerSheet * totalQuantity;
+
+  setEFluteCost(totalEFluteCost);
+};
+
+// Run calculation whenever E-Flute inputs or quantity change
+useEffect(() => {
+  calculateEFluteCost();
+}, [eFluteHeight, eFluteWidth, quantity, wastage]);
+
 
   useEffect(() => {
     let rate = 0
@@ -381,9 +407,10 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
         pastingCost +
         transportCost +
         baseCoatingCost +
+        eFluteCost+
         metpetPrice,
     )
-  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost, baseCoatingCost, metpetPrice])
+  }, [boardCost, price, coatingPrice, dieCost, punchingCost, pastingCost, transportCost, baseCoatingCost, eFluteCost, metpetPrice])
 
   const finalCost = ((totalCost / (quantity * ups)) * (1 + percentage / 100)).toFixed(2)
 
@@ -418,11 +445,11 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
   const moqValues = [3000,5000, 7500, 10000, 12500, 15000, 20000]; // Predefined MOQ values
   const transportCosts: Record<number, number> = {
     3000: 250,
-    5000: 250,
-    7500: 450,
-    10000: 550,
-    12500: 650,
-    15000: 750,
+    5000: 450,
+    7500: 550,
+    10000: 650,
+    12500: 750,
+    15000: 1000,
     20000: 1000
   };
   
@@ -772,7 +799,25 @@ const [coatingWidth, setCoatingWidth] = useState<number | null>(null);
         <div className="w-full lg:w-3/5 flex flex-col sm:flex-row gap-6">
           <div className="w-full sm:w-1/2 bg-white dark:bg-dark-surface shadow-md rounded-2xl p-4 md:p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">Die Cost</h2>
+            <label className="block text-gray-700 dark:text-dark-text">E-Flute Height (inches):</label>
+    <input
+      type="number"
+      value={eFluteHeight !== null ? eFluteHeight : ""}
+      onChange={(e) => setEFluteHeight(e.target.value ? Number(e.target.value) : null)}
+      className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+    />
 
+    <label className="block text-gray-700 dark:text-dark-text mt-4">E-Flute Width (inches):</label>
+    <input
+      type="number"
+      value={eFluteWidth !== null ? eFluteWidth : ""}
+      onChange={(e) => setEFluteWidth(e.target.value ? Number(e.target.value) : null)}
+      className="border border-gray-300 dark:border-gray-700 p-2 md:p-3 w-full rounded-md bg-white dark:bg-dark-surface text-gray-800 dark:text-dark-text"
+    />
+
+    <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mt-4">
+      E-Flute Cost: ₹{eFluteCost.toFixed(2)}/-
+    </h3>
             <label className="block text-gray-700 dark:text-dark-text">Die Cost (Default: ₹500):</label>
             <input
               type="number"
