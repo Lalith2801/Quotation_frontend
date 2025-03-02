@@ -23,7 +23,7 @@ export default function Home() {
   const [machines, setMachines] = useState<PricingData>({ pricingData: {} })
   const [selectedMachine, setSelectedMachine] = useState("")
   const [selectedPrintType, setSelectedPrintType] = useState("")
-  const [moq, setMoq] = useState(3000);
+  const [moq, setMoq] = useState<number | "">("");
 
 
   const [ups, setUps] = useState(1)
