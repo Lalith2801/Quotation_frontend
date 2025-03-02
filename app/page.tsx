@@ -1039,6 +1039,7 @@ useEffect(() => {
           <th className="p-2 border">Board Cost</th>
           <th className="p-2 border">Printing Cost</th>
           <th className="p-2 border">Coating Cost</th>
+          <td className="p-2 border">e-flute</td>
           <th className="p-2 border">Punching Cost</th>
           <th className="p-2 border">Pasting Cost</th>
           <th className="p-2 border">Transport Cost</th>
@@ -1105,21 +1106,32 @@ const costPerSheet = Math.floor((validHeight * validWidth * rate) / 100 * 100) /
 const coatingCostForMOQ = costPerSheet * (calculatedQuantity + wastage);
           // **Punching Cost Calculation**
           let punchingCostForMOQ = 500;
-          if (calculatedQuantity > 1100) punchingCostForMOQ = 750;
-          if (calculatedQuantity > 1500) punchingCostForMOQ = 1000;
-          if (calculatedQuantity > 2000) punchingCostForMOQ += Math.ceil((calculatedQuantity - 2000) / 500) * 250;
 
+if (calculatedQuantity + wastage > 1200) punchingCostForMOQ = 750;
+if (calculatedQuantity + wastage> 1500) punchingCostForMOQ = 1000;
+if (calculatedQuantity + wastage> 2000) punchingCostForMOQ += Math.ceil((calculatedQuantity + wastage - 2000) / 500) * 250;
+
+// Apply E-Flute pricing separately
+if (punchingType === "E-Flute") {
+  punchingCostForMOQ = totalQuantity * 1; // ₹1 per sheet for E-Flute
+}
           // **Pasting Cost Calculation**
           let pastingRate = 0;
           if (pastingType === "Bottom Lock") pastingRate = 0.45;
           else if (pastingType === "Side Pasting") pastingRate = 0.25;
           const pastingCostForMOQ = calculatedQuantity * ups * pastingRate;
 
+          const heightInCM = (Number(eFluteHeight) || 0) * 2.54;
+    const widthInCM = (Number(eFluteWidth) || 0) * 2.54;
+    const eFluteCostPerSheet = heightInCM * widthInCM * 0.0024;
+    const eFluteCostForMOQ = eFluteCostPerSheet * totalQuantity;
+
           // **Total Cost Calculation**
           const totalCostForMOQ =
             boardCostForMOQ +
             printingCostForMOQ +
             coatingCostForMOQ +
+            eFluteCostForMOQ+
             dieCost +
             punchingCostForMOQ +
             pastingCostForMOQ +
@@ -1137,6 +1149,7 @@ const coatingCostForMOQ = costPerSheet * (calculatedQuantity + wastage);
               <td className="p-2 border">₹{boardCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{printingCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{coatingCostForMOQ.toFixed(2)}</td>
+              <td className="p-2 border">₹{eFluteCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{punchingCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{pastingCostForMOQ.toFixed(2)}</td>
               <td className="p-2 border">₹{transportCostForMOQ.toFixed(2)}</td>
@@ -1147,7 +1160,6 @@ const coatingCostForMOQ = costPerSheet * (calculatedQuantity + wastage);
         })}
       </tbody>
     </table>
-    
     </div>
     
   )
